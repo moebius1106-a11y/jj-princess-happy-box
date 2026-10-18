@@ -19,7 +19,7 @@ st.markdown("""
 }
 
 .block-container {
-    padding-top: max(0.8rem, env(safe-area-inset-top)) !important;
+    padding-top: max(0.6rem, env(safe-area-inset-top)) !important;
     padding-bottom: max(3.5rem, env(safe-area-inset-bottom)) !important;
     padding-left: 0.8rem !important;
     padding-right: 0.8rem !important;
@@ -41,6 +41,22 @@ html, body, [class*="css"], .stApp {
 
 .stApp {
     background: linear-gradient(180deg, #FDF9F8 0%, #F5ECE9 100%) !important;
+}
+
+/* 頂部 iPhone / LINE 貼心提示卡 */
+.safari-tip-box {
+    background: #FFF9FA;
+    border: 1px dashed #E08A9D;
+    border-radius: 12px;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 0.82rem;
+    color: #8C6D77;
+    margin-bottom: 12px;
+}
+.safari-tip-highlight {
+    color: #C2255C;
+    font-weight: 700;
 }
 
 /* 頂部公主守護橫幅 */
@@ -65,10 +81,14 @@ html, body, [class*="css"], .stApp {
     line-height: 1.45;
 }
 
+/* 折疊區塊文字單行展示優化 */
 .streamlit-expanderHeader, div[data-testid="stExpander"] summary span, div[data-testid="stExpander"] details summary {
     color: #C2255C !important;
     font-weight: 700 !important;
-    font-size: 0.96rem !important;
+    font-size: 0.94rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 div[data-testid="stExpander"] {
     background: #FFFFFF !important;
@@ -151,15 +171,16 @@ div[role="radiogroup"] svg {
 .stButton>button {
     background: linear-gradient(135deg, #E08A9D 0%, #D47A8F 100%) !important;
     color: #FFFFFF !important;
-    font-size: 1.1rem !important;
+    font-size: 1.05rem !important;
     font-weight: 800 !important;
     border-radius: 24px !important;
     border: none !important;
-    padding: 13px 20px !important;
+    padding: 12px 18px !important;
     box-shadow: 0 6px 18px rgba(224, 138, 157, 0.35) !important;
     width: 100% !important;
     touch-action: manipulation !important;
     transition: transform 0.08s ease;
+    white-space: nowrap !important;
 }
 .stButton>button:active {
     transform: scale(0.96) !important;
@@ -179,20 +200,23 @@ div[role="radiogroup"] svg {
     touch-action: manipulation;
 }
 
+/* 召喚按鈕優化：強制單行、緊湊字距 */
 .line-call-btn {
     display: block;
     width: 100%;
     background: linear-gradient(135deg, #E08A9D 0%, #C2255C 100%);
     color: #FFFFFF !important;
     text-align: center;
-    padding: 14px 18px;
+    padding: 13px 10px;
     border-radius: 26px;
     font-weight: 800;
     text-decoration: none !important;
-    font-size: 0.98rem;
+    font-size: 0.92rem;
     box-shadow: 0 6px 20px rgba(194, 37, 92, 0.3);
     touch-action: manipulation;
     transition: transform 0.08s ease;
+    white-space: nowrap !important;
+    letter-spacing: -0.2px;
 }
 .line-call-btn:active {
     transform: scale(0.97);
@@ -216,11 +240,10 @@ def sanitize_text(text: str) -> str:
         text = text.replace(old, new)
     return text.strip()
 
-# ----------------- 4. 公主專屬週期守護計算（底層安靜運行） -----------------
+# 4. 公主專屬週期守護計算（底層安靜運行）
 def get_care_status():
     """
     基準日：2026-10-13，以 28 天為週期默默計算
-    全域無敏感字眼，全部包裝為「公主專屬特權模式」
     11/6 落在週期第 25 天（正好對應生日前夕與順毛美食回血期）
     """
     base_date = datetime.date(2026, 10, 13)
@@ -265,7 +288,7 @@ def get_care_status():
             "content": ""
         }
 
-# 5. 超低機率 SSR 稀有特權卡（防止口袋破洞）
+# 5. 超低機率 SSR 稀有特權卡
 SSR_CARDS = [
     {
         "type": "ssr",
@@ -290,7 +313,7 @@ SSR_CARDS = [
     }
 ]
 
-# 6. 上限極限擴充：萬向五維語料庫矩陣（組合數突破 50,000+）
+# 6. 上限極限擴充：萬向五維語料庫矩陣
 CORPUS = {
     "food": {
         "titles": [
@@ -588,16 +611,23 @@ def generate_unique_dynamic_card(target_cat: str):
         "img": ""
     }
 
-# 8. 頂部標題區
+# 8. 頂部 iPhone / LINE 瀏覽器貼心指引
 st.markdown("""
-<div style="text-align: center; margin-bottom: 14px;">
-    <div style="font-size: 2.2rem;">👑</div>
-    <div style="color: #C2255C; font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px;">真真公主的解壓美食盲盒</div>
-    <div style="color: #8C6D77; font-size: 0.88rem; margin-top: 4px;">🌌 50,000+ 動態宇宙！台南好店、吸貓嚕狗與爆笑解氣專區 🌸</div>
+<div class="safari-tip-box">
+    💡 <span class="safari-tip-highlight">貼心提醒：</span>若在 LINE 中開啟，請點右下角「<span class="safari-tip-highlight">⋯</span>」選擇「<span class="safari-tip-highlight">以 Safari / 預設瀏覽器開啟</span>」，體驗最順暢！✨
 </div>
 """, unsafe_allow_html=True)
 
-# 9. 智能檢測：若進入專屬呵護時期，自動展示頂部特權橫幅
+# 9. 頂部標題區（字數精簡，防止「解氣專區」折行）
+st.markdown("""
+<div style="text-align: center; margin-bottom: 14px;">
+    <div style="font-size: 2.2rem;">👑</div>
+    <div style="color: #C2255C; font-size: 1.42rem; font-weight: 800; letter-spacing: 0.5px;">真真公主的解壓美食盲盒</div>
+    <div style="color: #8C6D77; font-size: 0.86rem; margin-top: 4px; white-space: nowrap;">🌌 50,000+ 動態宇宙！台南好店與解氣專區 🌸</div>
+</div>
+""", unsafe_allow_html=True)
+
+# 10. 智能檢測：若進入專屬呵護時期，自動展示頂部特權橫幅
 care_status = get_care_status()
 if care_status["is_special"]:
     st.markdown(f"""
@@ -607,8 +637,8 @@ if care_status["is_special"]:
     </div>
     """, unsafe_allow_html=True)
 
-# 10. 小孩不乖．媽媽專屬發洩順毛區
-with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐苦水）", expanded=True if "cure_result" in st.session_state else False):
+# 11. 小孩不乖．媽媽專屬發洩順毛區（標題精簡不折行）
+with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區", expanded=True if "cure_result" in st.session_state else False):
     st.markdown("<p style='color: #4A3E3D; font-size: 0.9rem; margin-bottom: 6px;'>把今天臭小子/小妞幹的蠢事寫下來，好友立刻開出專屬退火單！</p>", unsafe_allow_html=True)
     kid_trouble = st.text_input("今天他又做了什麼讓妳血壓飆高？", value="翻倒水在名牌包" if "cure_result" not in st.session_state else "", placeholder="例如：翻倒水在名牌包、出門亂跑找半天...")
     cure_style = st.radio("選擇吐槽解氣風格：", ["✨ 溫柔撫平順毛", "🔥 毒舌幽默同仇敵愾"], horizontal=True)
@@ -649,7 +679,7 @@ with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐
         </div>
         """, unsafe_allow_html=True)
 
-# 11. 盲盒分類抽卡機制
+# 12. 盲盒分類抽卡機制
 theme_filter = st.radio(
     "真真公主今天想翻什麼牌子？",
     ["🌌 無限宇宙模式（10,000+ 種動態組裝）", "🍜 美食探店與好味", "🐶 萌犬爆笑現場", "🐱 傲嬌主子日常", "🧒 當媽修煉吐槽", "😂 爆笑生活迷因"],
@@ -657,7 +687,7 @@ theme_filter = st.radio(
 )
 
 def pick_next_card():
-    # 特殊時期：65% 高機率優先抽中專屬呵護卡（若當天符合特殊區間）
+    # 特殊時期：65% 高機率優先抽中專屬呵護卡
     if care_status["is_special"] and random.random() < 0.65:
         care_hash = hashlib.md5((care_status["title"] + care_status["content"]).encode('utf-8')).hexdigest()
         if care_hash not in st.session_state.seen_hashes:
@@ -686,20 +716,19 @@ def pick_next_card():
     else:
         target_cat = "infinite"
 
-    # 防口袋破洞機制：SSR 機率微調至 1.8%，且每天/每階段最多僅限觸發 1 次
+    # 防口袋破洞機制：SSR 機率微調至 1.8%
     if not st.session_state.ssr_drawn_today and random.random() < 0.018:
         st.session_state.ssr_drawn_today = True
         chosen_ssr = random.choice(SSR_CARDS)
         return chosen_ssr
 
-    # 執行無重複動態生成
     return generate_unique_dynamic_card(target_cat)
 
 # 抽卡按鈕
 if st.button("✨ 點我開盲盒！抽取真真專屬快樂 ✨"):
     st.session_state.current_card = pick_next_card()
 
-# 12. 開出的卡片展示
+# 13. 開出的卡片展示
 card = st.session_state.current_card
 tag_class = f"tag-{card['type']}" if f"tag-{card['type']}" in ["tag-food", "tag-dog", "tag-cat", "tag-kid", "tag-meme", "tag-infinite", "tag-ssr", "tag-care"] else "tag-food"
 
@@ -716,21 +745,21 @@ if card.get("img"):
 
 st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
 
-# 13. 脆（Threads）療癒直達專區
-with st.expander("🌀 還是想去脆上晃晃？點這裡直達熱門療癒話題", expanded=False):
+# 14. 脆（Threads）療癒直達專區（標題精簡不折行）
+with st.expander("🌀 還是想去脆上晃晃？熱門療癒話題", expanded=False):
     st.caption("為真真公主過濾掉無聊吵架，精選 Threads 上最受歡迎的美食與毛孩傳送門：")
     st.markdown('<a href="https://www.threads.net/search?q=%E5%8F%B0%E5%8D%97%E7%BE%8E%E9%A3%9F&serp_type=default" target="_blank" class="threads-btn">🍜 前往 Threads 查看最新【台南私房美食推薦】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E5%8F%AF%E6%84%9B%E5%B0%8F%E7%8B%97&serp_type=default" target="_blank" class="threads-btn">🐶 前往 Threads 查看最新【汪星人搞笑日常】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 前往 Threads 查看最新【傲嬌貓貓迷惑行為】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 前往 Threads 查看最新【爆笑迷因廢文】</a>', unsafe_allow_html=True)
 
-# 14. 專屬好友直達通道
+# 15. 專屬好友直達通道（文案緊湊單行化）
 line_direct_url = "https://line.me/ti/p/3u_xwcKRUB"
 
 st.markdown(f"""
 <div style="margin-top: 25px; margin-bottom: 25px;">
     <a href="{line_direct_url}" target="_blank" rel="noopener noreferrer" class="line-call-btn">
-        💌 抽完了還是無聊或肚子餓？點此召喚專屬好友出動陪吃聊聊 🍵
+        💌 抽完還是無聊？點此召喚專屬好友陪吃聊聊 🍵
     </a>
 </div>
 """, unsafe_allow_html=True)
