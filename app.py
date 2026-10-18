@@ -2,7 +2,6 @@ import streamlit as st
 import random
 import time
 import os
-import re
 
 # 嘗試載入 AI 套件（若環境未設定 Key，會自動無縫切換至豐富預設庫，絕不報錯）
 try:
@@ -180,7 +179,7 @@ def sanitize_text(text: str) -> str:
         text = text.replace(old, new)
     return text
 
-# 4. 精選核心卡池資料庫（海量基底）
+# 4. 精選核心卡池資料庫（大台南美食、萌寵、當媽修煉與SSR特權）
 BASE_CARDS = [
     # ─── 🍜 大台南私房吃貨與甜點地圖 ───
     {
@@ -445,7 +444,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 7. AI 調用邏輯（ChatGPT 與 Gemini 雙引擎）
+# 7. AI 調用邏輯（ChatGPT 與 Gemini 雙引擎，具備 3 秒超時防死鎖機制）
 def get_ai_response(prompt_text, engine="gemini"):
     gemini_key = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
     openai_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
@@ -454,18 +453,18 @@ def get_ai_response(prompt_text, engine="gemini"):
         try:
             genai.configure(api_key=gemini_key)
             model = genai.GenerativeModel("gemini-1.5-flash")
-            response = model.generate_content(prompt_text)
+            response = model.generate_content(prompt_text, request_options={"timeout": 3})
             return sanitize_text(response.text)
         except Exception:
             pass
 
     if engine == "openai" and openai_key and openai:
         try:
-            client = openai.OpenAI(api_key=openai_key)
+            client = openai.OpenAI(api_key=openai_key, timeout=3.0)
             completion = client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt_text}],
-                max_tokens=400
+                max_tokens=250
             )
             return sanitize_text(completion.choices[0].message.content)
         except Exception:
@@ -474,7 +473,8 @@ def get_ai_response(prompt_text, engine="gemini"):
     fallback_pool = [
         "『今天臭小孩惹真真公主生氣？來，好友替妳開出診斷單：罰小孩面壁五分鐘，罰好友帶真真公主去吃炭佐麻里大口嚼肉！大口咬下去那一秒，世界又恢復美麗了！』\n\n#真真專屬順毛 #把委屈吃回來",
         "『不管是把水倒進包包還是出門亂跑，記住八字箴言：自己生的，大腿放鬆！今晚就當一灘無憂無慮的爛泥巴，吃飽飽好好睡，明天又是一條好漢！』\n\n#媽媽不生氣保命符 #好友全力支持",
-        "『拉麵湯頭要濃，生活步調要鬆。今天什麼家務跟工作都別管，點一杯微糖微冰的仙楂烏龍，打開電視放空，讓全世界都圍著真真公主轉！』\n\n#放空是合法權利 #美食解千愁"
+        "『拉麵湯頭要濃，生活步調要鬆。今天什麼家務跟工作都別管，點一杯微糖微冰的仙楂烏龍，打開電視放空，讓全世界都圍著真真公主轉！』\n\n#放空是合法權利 #美食解千愁",
+        "『天底下沒有什麼煩惱是一碗滾燙鮮甜的台南溫體牛肉湯解決不了的，如果不行，那就再加上一盤剛起鍋的香酥排骨酥！』\n\n#真真公主解壓指南 #專屬吃貨後盾"
     ]
     return sanitize_text(random.choice(fallback_pool))
 
@@ -507,9 +507,6 @@ with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐
                 """, unsafe_allow_html=True)
 
 # 9. 盲盒分類抽卡機制（動態結合：核心精選 ＋ 語義工廠 ＋ 即時 AI）
-if "drawn_history" not in st.session_state:
-    st.session_state.drawn_history = []
-
 if "current_card" not in st.session_state:
     st.session_state.current_card = random.choice(BASE_CARDS)
 
@@ -566,12 +563,9 @@ def pick_next_card():
     card["content"] = sanitize_text(card["content"])
     return card
 
-# 抽卡按鈕
+# 抽卡按鈕（極速響應架構，點擊即更新，徹底告別轉圈死鎖）
 if st.button("✨ 點我開盲盒！抽取真真專屬快樂 ✨"):
-    with st.spinner("正在從萬張星空中為真真公主捕捉快樂能量...🐾"):
-        time.sleep(0.12)
-        st.session_state.current_card = pick_next_card()
-    st.rerun()
+    st.session_state.current_card = pick_next_card()
 
 # 10. 開出的卡片展示
 card = st.session_state.current_card
