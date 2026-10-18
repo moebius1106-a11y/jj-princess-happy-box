@@ -12,13 +12,11 @@ st.set_page_config(
 # 2. iPhone WebKit 深度優化與真楨美學專屬配色加固 CSS
 st.markdown("""
 <style>
-/* 徹底鎖定 iOS 淺色渲染，防止 iPhone 深色模式反轉造成字體反白隱形 */
 :root {
     color-scheme: light !important;
     -webkit-color-scheme: light !important;
 }
 
-/* 適配 iPhone 頂部動態島 / 瀏海與底部安全區域 (Home Bar) */
 .block-container {
     padding-top: max(0.8rem, env(safe-area-inset-top)) !important;
     padding-bottom: max(3.5rem, env(safe-area-inset-bottom)) !important;
@@ -27,13 +25,11 @@ st.markdown("""
     -webkit-text-size-adjust: 100% !important;
 }
 
-/* 隱藏官方雜項與浮水印 */
 #MainMenu, footer, header, [data-testid="manage-app-button"], div[data-testid="stDecoration"] {
     display: none !important;
     visibility: hidden !important;
 }
 
-/* iOS 專屬字體平滑與觸控反饋，消除雙擊放大延遲 */
 html, body, [class*="css"], .stApp {
     color: #4A3E3D !important;
     font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Helvetica Neue", sans-serif;
@@ -46,7 +42,6 @@ html, body, [class*="css"], .stApp {
     background: linear-gradient(180deg, #FDF9F8 0%, #F5ECE9 100%) !important;
 }
 
-/* 摺疊面板 (Expander) 標題顯色加固 */
 .streamlit-expanderHeader, div[data-testid="stExpander"] summary span, div[data-testid="stExpander"] details summary {
     color: #C2255C !important;
     font-weight: 700 !important;
@@ -60,7 +55,6 @@ div[data-testid="stExpander"] {
     box-shadow: 0 4px 14px rgba(224, 138, 157, 0.1) !important;
 }
 
-/* 單選按鈕文字顯色加固 */
 div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     color: #4A3E3D !important;
     font-weight: 600 !important;
@@ -71,7 +65,6 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     font-weight: 700 !important;
 }
 
-/* 徹底修正 Radio 單選圓圈變黑問題 */
 div[role="radiogroup"] > label div:first-child {
     background-color: #FFFFFF !important;
     border: 2px solid #E08A9D !important;
@@ -85,7 +78,6 @@ div[role="radiogroup"] svg {
     fill: #C2255C !important;
 }
 
-/* 盲盒卡片效果 */
 .card-box {
     background: #FFFFFF !important;
     padding: 22px 18px !important;
@@ -132,7 +124,6 @@ div[role="radiogroup"] svg {
     border: 1px solid #F3DFE3;
 }
 
-/* 抽卡按鈕 */
 .stButton>button {
     background: linear-gradient(135deg, #E08A9D 0%, #D47A8F 100%) !important;
     color: #FFFFFF !important;
@@ -150,7 +141,6 @@ div[role="radiogroup"] svg {
     transform: scale(0.96) !important;
 }
 
-/* 脆（Threads）按鈕 */
 .threads-btn {
     display: block;
     background: #2D2426;
@@ -165,7 +155,6 @@ div[role="radiogroup"] svg {
     touch-action: manipulation;
 }
 
-/* LINE 專屬呼叫按鈕樣式 */
 .line-call-btn {
     display: block;
     width: 100%;
@@ -203,196 +192,325 @@ def sanitize_text(text: str) -> str:
         text = text.replace(old, new)
     return text.strip()
 
-# 4. 精選靜態母庫（含 SSR 專屬卡）
-STATIC_CARDS = [
+# 4. 超低機率 SSR 稀有特權卡（防止口袋破洞）
+SSR_CARDS = [
     {
         "type": "ssr",
-        "tag": "👑 專屬特權・SSR 稀有卡",
+        "tag": "👑 奇蹟降臨・SSR 歐皇特權卡",
         "title": "🍲 台南私房好料隨傳隨到探店券",
-        "content": "恭喜真真公主抽到稀有 SSR！\n【兌換權利】：\n只要公主想吃，不管是台南排隊名店、隱藏甜點、深夜罪惡牛肉湯還是火鍋，好友無條件出動陪吃探店，排隊與熱量全由好友吸收！🚗💨",
+        "content": "【千萬分之一機率歐皇認證】\n恭喜真真公主觸發稀有特權！\n只要公主想吃，不管是台南排隊名店、隱藏甜點、深夜罪惡牛肉湯還是麻辣鍋，好友無條件出動陪吃探店，排隊與熱量全由好友吸收！🚗💨",
         "img": ""
     },
     {
         "type": "ssr",
-        "tag": "👑 專屬特權・SSR 稀有卡",
+        "tag": "👑 奇蹟降臨・SSR 歐皇特權卡",
         "title": "🍰 專屬下午茶與手搖補血券",
-        "content": "恭喜真真公主抽到限量 SSR！\n【兌換權利】：\n今天店裡忙翻、帶小孩血壓飆高想喝甜的？出示此截圖，好友立刻奉上好茶甜點，真真公主只要張嘴負責吃，好好回血放空！🧁",
+        "content": "【千萬分之一機率歐皇認證】\n今天店裡忙翻、帶小孩血壓飆高想喝甜的？出示此截圖，好友立刻奉上仙楂烏龍與特調好茶甜點，真真公主只要張嘴負責吃，好好回血放空！🧁",
         "img": ""
     },
     {
         "type": "ssr",
-        "tag": "👑 專屬特權・SSR 稀有卡",
+        "tag": "👑 奇蹟降臨・SSR 歐皇特權卡",
         "title": "🛡️ 專屬出氣筒與無限順毛券",
-        "content": "恭喜真真公主抽到頂級 SSR！\n【兌換權利】：\n今日不論心情多煩、遇到什麼鳥事想吐槽，好友無條件站妳這邊同仇敵愾，不講大道理、全心全意把真真公主哄開心為止！🌸",
+        "content": "【千萬分之一機率歐皇認證】\n今日不論心情多煩、遇到什麼鳥事想吐槽，好友無條件站妳這邊同仇敵愾，不講大道理、全心全意把真真公主哄開心為止！🌸",
         "img": ""
-    },
-    {
-        "type": "food",
-        "tag": "🍜 台南吃貨地圖",
-        "title": "排隊也是一種懂吃儀式",
-        "content": "『拉麵要排隊？沒關係！』\n只要湯頭夠濃郁、叉燒夠嫩，等待都是值得的。\n跟懂吃的好友邊聊天邊等位子，不知不覺就輪到我們，大口喝湯吃肉的瞬間，整天的疲勞直接歸零！",
-        "img": ""
-    },
-    {
-        "type": "dog",
-        "tag": "🐶 柴犬頑固現場",
-        "title": "散步終點站：就地躺平",
-        "content": "走到了十字路口，柴柴突然決定：『我今天就走到這裡了。』\n脖子直接縮成雙下巴麻糬，四隻腳像塗了強力膠焊死在柏油路上，人類只能尷尬地在路人圍觀下把一整坨肉抱回家！",
-        "img": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=600&auto=format&fit=crop&q=80"
-    },
-    {
-        "type": "cat",
-        "tag": "🐱 貓界霸王條款",
-        "title": "可以摸，但只能摸三下",
-        "content": "第一下：呼嚕呼嚕好舒服～\n第二下：本宮准你摸。\n第三下：一口咬住人類的手！\n『大膽！誰准你摸第四下的！』（咬完兩秒後又用頭蹭你的手心討肉泥）",
-        "img": "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=600&auto=format&fit=crop&q=80"
     }
 ]
 
-# 5. 分類專屬的「萬向矩陣語意庫」（徹底避免跨類混雜與重複）
+# 5. 上限極限擴充：萬向五維語料庫矩陣（組合數突破 50,000+）
 CORPUS = {
     "food": {
-        "titles": ["台南吃貨的深夜救贖", "舌尖上的回血儀式", "今天不談減肥只談快樂", "永康隱藏美食私房話", "甜點是仙女的充電寶"],
+        "titles": [
+            "台南吃貨的深夜救贖", "舌尖上的回血儀式", "今天不談減肥只談快樂", 
+            "永康隱藏美食私房話", "甜點是仙女的充電寶", "熱湯澆下去的溫柔瞬間",
+            "炭火滋滋作響的解壓法", "海鮮自由的頂級快樂", "巷弄老宅的焦糖香氣", "懂吃靈魂的專屬地圖"
+        ],
         "openings": [
             "剛結束一天緊湊的預約客人，走出店門口肚子咕嚕嚕抗議",
             "深夜滑著 IG，滿螢幕都在推台南在地現切溫體牛肉湯",
             "突然超級想吃熱騰騰又香氣逼人的排隊拉麵濃郁湯頭",
             "下午店務告一段落，靈魂極度渴望一塊現烤焦糖布丁或法式千層",
-            "晚餐時間到了，腦袋瞬間進入選擇障礙的放空模式"
+            "晚餐時間到了，腦袋瞬間進入選擇障礙的放空模式",
+            "路過炭佐麻里聞到迷人的炭火香，理智線瞬間斷裂",
+            "明明剛吃飽沒多久，嘴巴卻莫名其妙寂寞了起來",
+            "經過台南永康老街，那股現炒鱔魚意麵的鑊氣直接把魂勾走",
+            "天氣微涼的夜晚，胃裡只有一個念頭：熱騰騰的麻辣鴨血豆腐",
+            "工作忙到忘記時間，回過神來只想用大餐狠狠犒賞自己"
         ],
         "twists": [
             "這時候喝一口鮮甜滾燙的牛肉高湯，所有疲憊真的瞬間被徹底融化！",
             "炭佐麻里的烤肉滋滋作響，大口嚼肉的爽快感是任何保養品都換不來的！",
             "阿力海滿滿的生蠔、龍蝦跟哈根達斯，就是犒賞女強人最棒的禮物！",
             "來一杯酸甜生津的仙楂烏龍，微糖微冰，整個人都神清氣爽起來了！",
-            "巷弄老宅剛出爐的肉桂捲，那股肉桂黑糖香氣直接把好心情補到滿格！"
+            "巷弄老宅剛出爐的肉桂捲，那股肉桂黑糖香氣直接把好心情補到滿格！",
+            "咬下金黃酥脆的炸雞外皮，肉汁爆開的瞬間，所有煩惱通通立正站好！",
+            "焦糖布丁滑進嘴裡的綿密甜味，就是對抗世界所有瑣事的最強盾牌！",
+            "現切溫體牛肉沾上薑絲油膏，大口扒下肉燥飯，靈魂直接原地昇華！"
         ],
         "actions": [
             "只要真真公主翻牌子，專屬好友隨時開車出動，排隊買單全包！🚗",
             "今晚熱量由好朋友全額吸收，公主只負責開心地把委屈吃回來！✨",
             "吃飽飽才是正經事，明天的事交給明天的智慧，今晚先犒賞自己！🌸",
-            "放下手機好好大快朵頤，這家店已經收錄在我們的私房必吃清單了！🍲"
+            "放下手機好好大快朵頤，這家店已經收錄在我們的私房必吃清單了！🍲",
+            "管他什麼熱量卡路里，今晚吃得開心比什麼都重要，好友全力撐妳！😋",
+            "穿好舒適平底鞋，專屬司機與試吃員隨時待命，探店出發！💨",
+            "把所有的怨氣通通嚼碎吞下去，明天又是光芒萬丈的霸氣女老闆！👑",
+            "甜點裝在另一個胃，吃完心情直接調回順利開掛模式！🧁"
         ],
-        "tags": ["#台南私房美食 #把委屈吃回來 #懂吃好友隨傳隨到 #炭佐麻里魂"]
+        "tags": [
+            "#台南私房美食 #把委屈吃回來 #懂吃好友隨傳隨到 #炭佐麻里魂",
+            "#阿力海海鮮自由 #仙楂烏龍解膩必備 #深夜牛肉湯救贖 #永康吃貨日常",
+            "#減肥永遠是明天的事 #仙女要吃飽才漂亮 #舌尖上的充電站 #專屬美食後盾",
+            "#焦糖布丁萬歲 #拉麵硬麵派 #大口吃肉大口開心 #懂吃知己在線",
+            "#今天不當大人只當吃貨 #熱量全由好友吸收 #台南排隊名店攻略 #美食治癒一切",
+            "#吃飽才有力氣搞事業 #人生苦短及時大餐 #美食盲盒驚喜 #真真公主限定"
+        ]
     },
     "dog": {
-        "titles": ["汪星人的逆天腦迴路", "小狗勾能有什麼壞心眼", "毛茸茸的治癒力量", "散步是假躺平是真", "廚房雷達已上線"],
+        "titles": [
+            "汪星人的逆天腦迴路", "小狗勾能有什麼壞心眼", "毛茸茸的治癒力量", 
+            "散步是假躺平是真", "廚房雷達已上線", "耳朵貼成海豹的討好現場",
+            "狗界戲精的日常發揮", "四腳朝天的碰瓷大師", "搖尾巴頻率破表時刻", "世界上最溫柔的大狗勾"
+        ],
         "openings": [
             "散步走到一半，柴犬突然兩眼放空，四隻腳像水泥灌漿焊死在地上",
             "在房間輕輕撕開零食包裝袋，明明在客廳熟睡的狗勾 0.1 秒瞬移出現在面前",
             "回家一開門，發現拖鞋被啃爛，旁邊有一隻貼著海豹耳狂搖尾巴的無辜犯人",
             "柯基興高采烈衝向樓梯，結果小短腿在半空中瘋狂空踩，像個小吐司麵包",
-            "二哈做錯事被抓包，居然站直身子對著妳仰天長嘯『嗷嗚嗚嗚』比妳還激動"
+            "二哈做錯事被抓包，居然站直身子對著妳仰天長嘯『嗷嗚嗚嗚』比妳還激動",
+            "大雨天剛幫牠洗好吹乾毛，牠轉頭直接在客廳地毯上瘋狂磨擦打滾",
+            "假裝把零食丟出去，牠像箭一樣衝出去找了三分鐘，回頭用被背叛的眼神瞪妳",
+            "黃金獵犬把大腦袋擱在妳膝蓋上，兩顆黑豆眼睛水汪汪眨呀眨",
+            "小狗做夢爪子瘋狂跑步，嘴角還一抽一抽在吧唧嘴，不知在夢裡抓到幾隻雞",
+            "牽繩一拿起來牠原地起跳旋轉三圈半，解開扣子卻發現牠只想在門口吹風"
         ],
         "twists": [
             "看牠那一臉『拖鞋是自己裂開的，我只是在幫妳驗貨』的表情，真的氣到笑出來！",
             "把整顆毛茸茸的大頭塞進妳手心磨蹭，眼神水汪汪，瞬間什麼氣都消了～",
             "看著牠那圓滾滾的屁屁一扭一扭地晃過來，整天的煩惱立刻被丟到九霄雲外！",
-            "牠直接整隻四腳朝天翻開肚皮裝死，妳只能認命地連狗帶肉一把抱回家！"
+            "牠直接整隻四腳朝天翻開肚皮裝死，妳只能認命地連狗帶肉一把抱回家！",
+            "明明犯了滔天大罪，但看牠拚命搖成螺旋槳的尾巴，誰還忍心罵得出口啊！",
+            "把頭埋進牠毛茸茸的胸膛深吸一口狗味，身上的電量直接從 1% 充到 100%！",
+            "那雙純真無邪的眼睛看著妳，彷彿在說：『妳是世界上最厲害的主人！』",
+            "小短腿跑得飛快卻在轉角打滑漂移，這呆萌蠢樣治癒了所有的心累！"
         ],
         "actions": [
             "果然吸狗才是世界上最有效的退火良藥，心情瞬間變美麗！🐾",
             "真真公主今天要是被瑣事惹煩了，就該看看小狗的傻樣好好笑一場！🐶",
-            "小狗只知道全世界妳最棒，跟著牠一起傻笑放空就對了！💖"
+            "小狗只知道全世界妳最棒，跟著牠一起傻笑放空就對了！💖",
+            "煩惱丟給狗勾，快樂留給公主，今晚回家好好嚕狗充電！✨",
+            "不管在外面有多累，有毛孩無條件的熱情迎接，家就是最溫暖的地方！🏠",
+            "生活雖然有狗血，但身邊有可愛狗勾，日子永遠都是甜的！🌸",
+            "像小狗一樣活在當下，吃飽、睡好、用力搖尾巴！🦴",
+            "把這份傻氣的快樂收進口袋，今天又是被毛孩子融化的一天！🎈"
         ],
-        "tags": ["#汪星搞笑日常 #柴犬拒否犬 #吸狗解千愁 #萌寵治癒系"]
+        "tags": [
+            "#汪星搞笑日常 #柴犬拒否犬 #吸狗解千愁 #萌寵治癒系",
+            "#二哈吵架沒輸過 #柯基大屁屁 #毛茸茸的充電寶 #小狗能有什麼壞心眼",
+            "#黃金大暖男 #散步就地躺平 #狗界碰瓷大王 #純粹的快樂",
+            "#真真公主的萌寵時刻 #看狗傻笑治百病 #家有活寶 #毛孩無條件的愛",
+            "#四腳獸的迷惑行為 #快樂就是這麼簡單 #吸狗吸到飽 #今天也是狗奴才"
+        ]
     },
     "cat": {
-        "titles": ["貓咪的統治哲學", "愚蠢人類的必修課", "凌晨三點的貓界跑酷", "紙箱大於一切", "主子的傲嬌守則"],
+        "titles": [
+            "貓咪的統治哲學", "愚蠢人類的必修課", "凌晨三點的貓界跑酷", 
+            "紙箱大於一切", "主子的傲嬌守則", "踩奶是施捨咬手是恩賜",
+            "金色電眼的凝視", "液體生物的沙發融化法", "罐罐開瓶器的自我修養", "本宮准你摸了嗎"
+        ],
         "openings": [
             "花大錢買了超豪華羊毛保暖貓窩，主子轉身鑽進裝包裹的破爛髒紙箱",
             "明明貓碗裡還有半碗乾乾，橘貓卻坐在碗旁邊發出彷彿三天沒吃飯的哭嚎",
             "半夜三點整座房子都在睡，貓咪突然連線外星信號在走廊進行直線衝刺賽跑",
             "主子主動跳上來翻肚皮呼嚕呼嚕，結果摸到第四下突然神速咬妳一口！",
-            "黑貓整隻融入黑色地毯，不開燈差點踩到一對突然睜開的金色大電眼"
+            "黑貓整隻融入黑色地毯，不開燈差點踩到一對突然睜開的金色大電眼",
+            "坐在電腦前剛要開始認真打字，一隻毛茸茸的大屁股精準一屁股坐在鍵盤上",
+            "看著桌上的水杯，貓咪伸出小毛爪試探性推一下，然後無情推下桌聽脆響",
+            "叫牠名字時牠連頭都不轉，只有右耳尖尖敷衍地動了 0.5 毫米",
+            "剛買了一整箱高級主食罐，牠聞了一下優雅地開始在磁磚上做埋砂動作",
+            "整隻貓掛在沙發扶手上拉成一條長麵包，眼神呆滯神遊天外"
         ],
         "twists": [
             "咬完之後牠又立刻用下巴磨蹭妳的指尖，完美演繹什麼叫『只許本宮任性』！",
             "那種居高臨下俯視人類的蔑視眼神，莫名其妙就能治好妳一整天的精神內耗！",
             "在牠眼裡，妳不是女強人也不是媽媽，妳只是負責開罐罐的專屬僕人～",
-            "整隻貓像一灘融化的液體癱在沙發上，讓人忍不住想跟著一起徹底躺平！"
+            "整隻貓像一灘融化的液體癱在沙發上，讓人忍不住想跟著一起徹底躺平！",
+            "但當牠把下巴輕輕擱在妳手臂上發出小馬達般的呼嚕聲，心瞬間化成水！",
+            "牠高傲冷酷不可一世，卻在妳難過安靜時悄悄走過來靠在妳腳邊！",
+            "這世界上最尊貴的生物，就是不管世俗眼光、只專注睡大覺的貓咪！",
+            "踩完妳肚子之後優雅舔毛，彷彿在說：『能伺候本宮是妳的福氣！』"
         ],
         "actions": [
             "學學貓咪的態度：愛誰誰，老娘開心最重要！✨",
             "真真公主今天也給自己發一張『貓咪特權令』，只想放空誰都別管！🐱",
-            "吸一口貓香，所有煩人的雜事直接灰飛煙滅～🌸"
+            "吸一口貓香，所有煩人的雜事直接灰飛煙滅～🌸",
+            "人生就要像貓一樣傲嬌：想要的時候才靠近，不喜歡的一律一爪拍開！💅",
+            "今晚當一隻液體貓咪，癱在沙發裡徹底融化放空！🛋️",
+            "別去管凡間瑣事，主子都沒在焦慮，公主也只管高貴優雅就好！👑",
+            "開一個罐罐，聽聽呼嚕聲，所有緊繃的神經通通解除武裝！🎐",
+            "向貓學習：吃飽、舔毛、睡到飽，這才是頂級名媛的步調！🐾"
         ],
-        "tags": ["#傲嬌主子 #貓咪迷惑行為 #像貓一樣過生活 #真真專屬療癒"]
+        "tags": [
+            "#傲嬌主子 #貓咪迷惑行為 #像貓一樣過生活 #真真專屬療癒",
+            "#凌晨跑酷冠軍 #紙箱才是真理 #貓是液體做的 #呼嚕呼嚕治百病",
+            "#只許本宮咬妳 #高冷吸貓現場 #僕人的自我修養 #貓生贏家",
+            "#冷眼看愚蠢人類 #貓界名媛守則 #今天只當一灘布丁 #高貴冷艷真真風"
+        ]
     },
     "kid": {
-        "titles": ["當媽修煉成仙手冊", "捏緊大腿的深呼吸藝術", "親生的保命符", "寫作業的渡劫現場", "開學倒數計時中"],
+        "titles": [
+            "當媽修煉成仙手冊", "捏緊大腿的深呼吸藝術", "親生的保命符", 
+            "寫作業的渡劫現場", "開學倒數計時中", "理智線繃斷倒數 321",
+            "天使與惡魔的隨機切換", "神獸出籠的受難日", "慈母手中線火氣心中燒", "當媽後的佛系成佛路"
+        ],
         "openings": [
             "剛換好乾淨衣服準備出門，臭小孩突然把整杯水或果汁精準翻倒在名牌包上",
             "寫作業前十分鐘母慈子孝，開始寫作業三分鐘心律不整、血壓飆破大氣層",
             "在外面一轉頭發現小孩像脫韁野馬亂衝，嚇得心臟差點從喉嚨跳出來",
             "剛把家裡客廳收拾乾淨，五分鐘後地板又鋪滿了樂高和撕碎的圖畫紙",
-            "問他一句『剛剛講的三遍有聽懂嗎？』，他用無辜大眼眨呀眨說『媽媽妳說什麼？』"
+            "問他一句『剛剛講的三遍有聽懂嗎？』，他用無辜大眼眨呀眨說『媽媽妳說什麼？』",
+            "明明交代了不能碰那瓶保養品，他轉頭拿去幫芭比娃娃洗頭洗得滿地泡泡",
+            "吃飯時含著一口飯在嘴裡包了半小時，像隻花栗鼠一樣動都不動",
+            "出門前三分鐘突然說：『媽媽我肚子痛想上大號，還有我水壺忘在學校！』",
+            "安靜超過三分鐘絕對沒好事，衝進房間一看發現他拿口紅在白牆作畫",
+            "帶著他去大賣場，整個人像無骨黏土一樣軟在地上打滾說要買玩具"
         ],
         "twists": [
             "深呼吸！手放開！千萬別把大腿掐青了，心裡默念三次：自己生的！自己生的！",
             "這根本不是小孩調皮，這是上天派來磨練真真公主早日得道成仙的劫難！",
             "轉身去泡一杯冰涼好茶，告訴自己：成績如浮雲，少爆一條血管能多活十年！",
-            "生氣是在拿別人的錯誤懲罰自己，仙女是絕對不能長出法令紋的！"
+            "生氣是在拿別人的錯誤懲罰自己，仙女是絕對不能長出法令紋的！",
+            "看在他睡著時像個安靜小天使的份上，今晚的暗殺名單先暫時劃掉！",
+            "心律不整是正常的，天下媽媽千千萬，大家都在渡同一個劫！",
+            "這時候最好的急救法：罰小孩面壁，媽媽立刻點一份大杯仙楂烏龍加厚奶蓋！",
+            "告訴自己：智商遺傳誰不好說，但他這脾氣絕對是隨了他爸那邊！"
         ],
         "actions": [
             "今天先記大過一次！罰好友等會帶真真公主去吃炭佐麻里大口嚼肉出氣！🥩",
             "小孩今晚面壁，真真公主負責吃香喝辣，好友全程當妳的專屬出氣筒！🛡️",
-            "當媽已經是用盡洪荒之力了，今天功課擺一邊，今晚公主先好好放空！🌸"
+            "當媽已經是用盡洪荒之力了，今天功課擺一邊，今晚公主先好好放空！🌸",
+            "所有委屈好友全盤接收，吃完好料擦乾淨手，明天依然是最辣媽咪！💅",
+            "大腿鬆開、放下衣架，仙女不跟凡間神獸一般見識，今晚早點躺平！🛌",
+            "臭小子惹的禍，今晚在餐桌上加倍討回來，好友隨時在線聽妳倒苦水！🗣️",
+            "做個快樂的媽媽比做個完美的媽媽更重要，今天給自己打滿分！💯",
+            "深呼吸吐氣～把脾氣留在昨天，把美麗留給真真公主！✨"
         ],
-        "tags": ["#當媽修煉日常 #捏大腿保命 #自己生的別生氣 #好友全力出氣"]
+        "tags": [
+            "#當媽修煉日常 #捏大腿保命 #自己生的別生氣 #好友全力出氣",
+            "#親生認證渡劫中 #神獸出沒請注意 #血壓飆破大氣層 #仙女不長法令紋",
+            "#客廳樂高地雷陣 #作業本上的眼淚 #今晚吃肉補血管 #最辣媽咪不服輸",
+            "#默念我不生氣 #天下媽媽同一個世界 #睡著是天使醒著是神獸 #真真專屬退火單"
+        ]
     },
     "meme": {
-        "titles": ["碳基生物系統重啟中", "下班後的融化布丁", "現代女人的標準矛盾", "滑手機的時光黑洞", "明日減肥復明日"],
+        "titles": [
+            "碳基生物系統重啟中", "下班後的融化布丁", "現代女人的標準矛盾", 
+            "滑手機的時光黑洞", "明日減肥復明日", "靈魂出竅日常",
+            "報復性熬夜冠軍", "社交電量已見底", "買衣服的哲學悖論", "躺平的最高境界"
+        ],
         "openings": [
             "一踏進家門甩掉高跟鞋的那一秒，整個人像沒有骨頭一樣癱死在沙發上",
             "打開衣櫃明明塞得滿滿當當，但每天早上依舊覺得自己像裸體一樣沒衣服穿",
             "下定決心今晚十點半一定要躺平，結果一滑脆回過神已經半夜一點半",
             "明明肚子好撐，但看到甜點菜單時，大腦立刻啟動第二個隱藏胃袋",
-            "遇到煩心事的第一反應不是生氣，而是立刻打開外送 App 看有沒有好吃的"
+            "遇到煩心事的第一反應不是生氣，而是立刻打開外送 App 看有沒有好吃的",
+            "剛坐下來打算放空五分鐘，突然發現自己已經盯著天花板放空了半小時",
+            "下定決心這禮拜開始健康飲食，但朋友一句『要不要吃宵夜』秒破防",
+            "走在路上看到反光的鏡子，不管再累都必須停下來整理一下瀏海美貌",
+            "跟別人聊天時保持微笑點頭，內心其實在想『今天晚餐到底要吃什麼』",
+            "下班後手機一轉靜音，全世界有什麼事都等明天日出再說"
         ],
         "twists": [
             "『我這不是在偷懶，我是在進行人體系統的硬體降溫與磁碟重組！』",
             "二十支口紅在直男眼裡全是紅色，但在真真公主眼裡每支都有專屬的靈魂！",
             "世界上所有的煩惱，在剛出爐的起司瀑布跟酥脆炸雞面前，通通都要立正站好！",
-            "晚上的時間才真正屬於我自己，雖然明天起床會後悔，但當下真的好爽啊！"
+            "晚上的時間才真正屬於我自己，雖然明天起床會後悔，但當下真的好爽啊！",
+            "生活很苦，但自己加點糖，甜點吃下去就是滿血復活的靈藥！",
+            "與其委屈自己討好世界，不如在沙發上把自己捲成一條安靜的壽司捲！",
+            "錢沒有不見，只是變成了那些漂亮的衣服、香氛跟好吃的東西陪在身邊！",
+            "長大最棒的事情，就是心情不好時可以名正言順給自己買大杯手搖飲！"
         ],
         "actions": [
             "放鬆放空是合法權利，今晚讓全世界圍著真真公主轉！✨",
             "今天誰惹妳不高興，截圖丟過來，好友幫妳無情吐槽到底！😂",
-            "人生苦短，及時行樂，吃好睡飽才是霸氣女老闆的王道！👑"
+            "人生苦短，及時行樂，吃好睡飽才是霸氣女老闆的王道！👑",
+            "當個快樂的廢物不需要道歉，今晚公主的任務就是發呆到最高境界！🛋️",
+            "把所有的煩惱格式化，喝一杯熱茶，鑽進被窩當最舒服的小仙女！🍵",
+            "做自己的女王，想吃就吃、想躺就躺，誰都別想對真真公主指手畫腳！💅",
+            "給疲憊的心情上一層保濕精華，明天起來依然耀眼奪目！🌟",
+            "專屬好友隨時在線接住妳的廢文，一起在生活的幽默裡大笑回血！🎉"
         ],
-        "tags": ["#爆笑脆文 #下班格式化 #明天再減肥 #真真公主的放空宇宙"]
+        "tags": [
+            "#爆笑脆文 #下班格式化 #明天再減肥 #真真公主的放空宇宙",
+            "#沙發壽司捲模式 #衣櫃永遠少一件 #報復性熬夜選手 #社交電量0格",
+            "#口紅永遠缺一色 #精緻窮但很快樂 #靈魂已經打卡下班 #生活需要廢話",
+            "#做自己的靠山 #甜點是第二個胃 #今晚不當女強人 #大笑解百毒"
+        ]
     }
 }
 
-# 6. 核心生成器：保證 50 抽絕對零重複的動態組裝引擎
-def generate_dynamic_card(category: str):
-    # 若是「無限宇宙」，隨機從各類別抽取元素跨界融合
-    if category == "infinite":
-        pool_key = random.choice(["food", "dog", "cat", "kid", "meme"])
+# 6. 全局永久不重複黑名單（Global Seen Registry）
+if "seen_hashes" not in st.session_state:
+    st.session_state.seen_hashes = set()
+
+if "ssr_drawn_today" not in st.session_state:
+    st.session_state.ssr_drawn_today = False
+
+if "current_card" not in st.session_state:
+    # 預設展示一張溫暖的開場卡
+    st.session_state.current_card = {
+        "type": "food",
+        "tag": "🍜 台南吃貨地圖",
+        "title": "舌尖上的回血儀式",
+        "content": "『剛結束一天緊湊的預約客人，走出店門口肚子咕嚕嚕抗議。』\n\n這時候喝一口鮮甜滾燙的牛肉高湯，所有疲憊真的瞬間被徹底融化！\n\n只要真真公主翻牌子，專屬好友隨時開車出動，排隊買單全包！🚗\n\n#台南私房美食 #把委屈吃回來 #懂吃好友隨傳隨到 #炭佐麻里魂",
+        "img": ""
+    }
+
+# 動態組裝引擎：保證「出現過絕不重複」
+def generate_unique_dynamic_card(target_cat: str):
+    is_infinite = (target_cat == "infinite")
+    
+    # 嘗試生成尚未被抽過的卡片（最多嘗試 200 次防卡死）
+    for _ in range(200):
+        if is_infinite:
+            pool_key = random.choice(["food", "dog", "cat", "kid", "meme"])
+            card_type = "infinite"
+            tag_name = "🌌 無限宇宙・動態漫遊"
+        else:
+            pool_key = target_cat
+            card_type = target_cat
+            tag_map = {
+                "food": "🍜 台南吃貨地圖",
+                "dog": "🐶 汪星爆笑日常",
+                "cat": "🐱 傲嬌主子哲學",
+                "kid": "🧒 當媽修煉吐槽",
+                "meme": "😂 爆笑生活迷因"
+            }
+            tag_name = tag_map.get(target_cat, "✨ 動態生成")
+
         data = CORPUS[pool_key]
-        tag_name = "🌌 無限宇宙・動態漫遊"
-        card_type = "infinite"
-    else:
-        data = CORPUS.get(category, CORPUS["food"])
-        tag_map = {
-            "food": "🍜 台南吃貨地圖",
-            "dog": "🐶 汪星爆笑日常",
-            "cat": "🐱 傲嬌主子哲學",
-            "kid": "🧒 當媽修煉吐槽",
-            "meme": "😂 爆笑生活迷因"
-        }
-        tag_name = tag_map.get(category, "✨ 動態生成")
-        card_type = category
+        title = random.choice(data["titles"])
+        op = random.choice(data["openings"])
+        tw = random.choice(data["twists"])
+        ac = random.choice(data["actions"])
+        tg = random.choice(data["tags"])
 
-    title = random.choice(data["titles"])
-    op = random.choice(data["openings"])
-    tw = random.choice(data["twists"])
-    ac = random.choice(data["actions"])
-    tg = random.choice(data["tags"])
+        content = f"『{op}。』\n\n{tw}\n\n{ac}\n\n{tg}"
+        content_hash = hashlib.md5((title + content).encode('utf-8')).hexdigest()
 
-    content = f"『{op}。』\n\n{tw}\n\n{ac}\n\n{tg}"
+        # 只要看過，立即跳過，絕不重複！
+        if content_hash not in st.session_state.seen_hashes:
+            st.session_state.seen_hashes.add(content_hash)
+            return {
+                "type": card_type,
+                "tag": tag_name,
+                "title": title,
+                "content": sanitize_text(content),
+                "img": ""
+            }
 
+    # 極端情況：若該分類組合快被抽乾，重設歷史並回傳
+    st.session_state.seen_hashes.clear()
     return {
         "type": card_type,
         "tag": tag_name,
@@ -401,23 +519,16 @@ def generate_dynamic_card(category: str):
         "img": ""
     }
 
-# 初始化 Session State
-if "history_hashes" not in st.session_state:
-    st.session_state.history_hashes = []
-
-if "current_card" not in st.session_state:
-    st.session_state.current_card = STATIC_CARDS[0]
-
 # 7. 頂部標題區
 st.markdown("""
 <div style="text-align: center; margin-bottom: 14px;">
     <div style="font-size: 2.2rem;">👑</div>
     <div style="color: #C2255C; font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px;">真真公主的解壓美食盲盒</div>
-    <div style="color: #8C6D77; font-size: 0.88rem; margin-top: 4px;">🌌 萬張無限動態生成！台南好店、吸貓嚕狗與爆笑解氣專區 🌸</div>
+    <div style="color: #8C6D77; font-size: 0.88rem; margin-top: 4px;">🌌 50,000+ 動態宇宙！台南好店、吸貓嚕狗與爆笑解氣專區 🌸</div>
 </div>
 """, unsafe_allow_html=True)
 
-# 8. 小孩不乖．媽媽專屬發洩順毛區（急速直出）
+# 8. 小孩不乖．媽媽專屬發洩順毛區
 with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐苦水）", expanded=True if "cure_result" in st.session_state else False):
     st.markdown("<p style='color: #4A3E3D; font-size: 0.9rem; margin-bottom: 6px;'>把今天臭小子/小妞幹的蠢事寫下來，好友立刻開出專屬退火單！</p>", unsafe_allow_html=True)
     kid_trouble = st.text_input("今天他又做了什麼讓妳血壓飆高？", value="翻倒水在名牌包" if "cure_result" not in st.session_state else "", placeholder="例如：翻倒水在名牌包、出門亂跑找半天...")
@@ -483,31 +594,14 @@ def pick_next_card():
     else:
         target_cat = "infinite"
 
-    # 15% 機率抽靜態 SSR 特權卡（給她驚喜感）
-    if random.random() < 0.15:
-        ssr_cards = [c for c in STATIC_CARDS if c["type"] == "ssr"]
-        chosen = random.choice(ssr_cards)
-        chosen_hash = hashlib.md5(chosen["content"].encode('utf-8')).hexdigest()
-        if chosen_hash not in st.session_state.history_hashes:
-            st.session_state.history_hashes.append(chosen_hash)
-            if len(st.session_state.history_hashes) > 60:
-                st.session_state.history_hashes.pop(0)
-            return chosen
+    # 防口袋破洞機制：SSR 機率微調至 1.8%，且每天/每階段最多僅限觸發 1 次
+    if not st.session_state.ssr_drawn_today and random.random() < 0.018:
+        st.session_state.ssr_drawn_today = True  # 抽中後鎖定，避免狂出
+        chosen_ssr = random.choice(SSR_CARDS)
+        return chosen_ssr
 
-    # 動態組裝，強制 60 抽去重檢驗（保證絕不重複）
-    attempts = 0
-    while attempts < 30:
-        attempts += 1
-        card = generate_dynamic_card(target_cat)
-        card_hash = hashlib.md5(card["content"].encode('utf-8')).hexdigest()
-        if card_hash not in st.session_state.history_hashes:
-            st.session_state.history_hashes.append(card_hash)
-            # 維護長度 60 的去重隊列
-            if len(st.session_state.history_hashes) > 60:
-                st.session_state.history_hashes.pop(0)
-            return card
-
-    return card
+    # 執行無重複動態生成
+    return generate_unique_dynamic_card(target_cat)
 
 # 抽卡按鈕
 if st.button("✨ 點我開盲盒！抽取真真專屬快樂 ✨"):
