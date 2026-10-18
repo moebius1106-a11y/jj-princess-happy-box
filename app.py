@@ -31,7 +31,7 @@ st.markdown("""
 
 .block-container {
     padding-top: max(0.8rem, env(safe-area-inset-top)) !important;
-    padding-bottom: max(3rem, env(safe-area-inset-bottom)) !important;
+    padding-bottom: max(3.5rem, env(safe-area-inset-bottom)) !important;
     padding-left: 0.8rem !important;
     padding-right: 0.8rem !important;
 }
@@ -139,12 +139,33 @@ div[role="radiogroup"] label {
 .threads-btn:active {
     opacity: 0.85;
 }
+
+/* LINE 專屬呼叫按鈕樣式 */
+.line-call-btn {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #E08A9D 0%, #C2255C 100%);
+    color: #FFFFFF !important;
+    text-align: center;
+    padding: 14px 18px;
+    border-radius: 26px;
+    font-weight: 800;
+    text-decoration: none;
+    font-size: 0.98rem;
+    box-shadow: 0 6px 20px rgba(194, 37, 92, 0.3);
+    touch-action: manipulation;
+    transition: transform 0.08s ease, opacity 0.08s ease;
+}
+.line-call-btn:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# 3. 超巨量精選卡池資料庫（海量內容保證不無聊）
+# 3. 超巨量精選卡池資料庫（海量內容保證不重複、不無聊）
 CARDS = [
-    # ─── 🍜 大台南私房吃貨與甜點地圖（擴充） ───
+    # ─── 🍜 大台南私房吃貨與甜點地圖 ───
     {
         "type": "food",
         "tag": "🍜 台南吃貨地圖",
@@ -297,7 +318,7 @@ CARDS = [
         "img": ""
     },
 
-    # ─── 🧒 小孩不乖．當媽修煉吐槽（超有共鳴） ───
+    # ─── 🧒 小孩不乖．當媽修煉吐槽 ───
     {
         "type": "kid",
         "tag": "🧒 當媽修煉日常",
@@ -572,10 +593,13 @@ with st.expander("🌀 還是想去脆上晃晃？點這裡直達熱門療癒話
     st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 前往 Threads 查看最新【傲嬌貓貓迷惑行為】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 前往 Threads 查看最新【爆笑迷因廢文】</a>', unsafe_allow_html=True)
 
-# 10. 專屬好友直達通道
-st.markdown("""
-<div style="text-align: center; margin-top: 18px;">
-    <a href="https://line.me/ti/p/3u_xwcKRUB" target="_blank" style="color: #C2255C; text-decoration: none; font-size: 0.92rem; font-weight: bold;">
+# 10. 專屬好友直達通道（雙協議加固版：支援原生 LINE 喚醒）
+# 採用 https://line.me/R/ti/p/~3u_xwcKRUB 與備用深度連結，確保手機一按即跳轉 LINE
+line_official_url = "https://line.me/R/ti/p/~3u_xwcKRUB"
+
+st.markdown(f"""
+<div style="margin-top: 25px; margin-bottom: 25px;">
+    <a href="{line_official_url}" target="_blank" rel="noopener noreferrer" class="line-call-btn">
         💌 抽完了還是無聊或肚子餓？點此召喚專屬好友出動陪吃聊聊 🍵
     </a>
 </div>
