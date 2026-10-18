@@ -1,6 +1,7 @@
 import streamlit as st
 import random
 import hashlib
+import datetime
 
 # 1. 頁面基本配置（針對 iPhone 視窗與 LINE 瀏覽器最佳化）
 st.set_page_config(
@@ -40,6 +41,28 @@ html, body, [class*="css"], .stApp {
 
 .stApp {
     background: linear-gradient(180deg, #FDF9F8 0%, #F5ECE9 100%) !important;
+}
+
+/* 頂部公主守護橫幅 */
+.care-banner {
+    background: linear-gradient(135deg, #FFF0F3 0%, #FFE3E8 100%) !important;
+    border: 1.5px solid #F3DFE3 !important;
+    border-radius: 18px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 14px !important;
+    box-shadow: 0 4px 14px rgba(224, 138, 157, 0.15) !important;
+    text-align: center;
+}
+.care-banner-tag {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #C2255C;
+    margin-bottom: 4px;
+}
+.care-banner-msg {
+    font-size: 0.92rem;
+    color: #4A3E3D;
+    line-height: 1.45;
 }
 
 .streamlit-expanderHeader, div[data-testid="stExpander"] summary span, div[data-testid="stExpander"] details summary {
@@ -104,6 +127,7 @@ div[role="radiogroup"] svg {
 .tag-meme { background-color: #E7F5FF; color: #1971C2; }
 .tag-infinite { background-color: #F8F0FC; color: #845EF7; border: 1px solid #E599F7; }
 .tag-ssr { background-color: #FFF0F3; color: #C2255C; border: 1.5px dashed #E08A9D; }
+.tag-care { background-color: #FFE3EC; color: #C2255C; border: 1.5px solid #FFCCD5; }
 
 .card-title {
     font-size: 1.25rem;
@@ -192,7 +216,56 @@ def sanitize_text(text: str) -> str:
         text = text.replace(old, new)
     return text.strip()
 
-# 4. 超低機率 SSR 稀有特權卡（防止口袋破洞）
+# ----------------- 4. 公主專屬週期守護計算（底層安靜運行） -----------------
+def get_care_status():
+    """
+    基準日：2026-10-13，以 28 天為週期默默計算
+    全域無敏感字眼，全部包裝為「公主專屬特權模式」
+    11/6 落在週期第 25 天（正好對應生日前夕與順毛美食回血期）
+    """
+    base_date = datetime.date(2026, 10, 13)
+    today = datetime.date.today()
+    days_diff = (today - base_date).days
+    cycle_day = (days_diff % 28) + 1  # 1 ~ 28 天
+
+    if 1 <= cycle_day <= 5:
+        return {
+            "is_special": True,
+            "banner_tag": "🌸 今日公主專屬・滿血回溫特權",
+            "banner_msg": "今天全世界的事情都得靠邊站！溫熱好茶與暖胃甜品無上限供應，公主專心放空回血就好～🍵",
+            "card_tag": "🌸 溫柔補血卡",
+            "title": "今日指令：暖胃、放空、拒絕勞累",
+            "content": "『肚子悶悶、電力剩 10%？』\n\n今天雜事自動消散！熱黑糖桂圓茶隨時在線，生冷飲料全面退散。\n公主今天只負責在沙發當融化布丁，好好休息，所有的辛苦好友罩妳！🌸\n\n#專屬補血模式 #今天只想徹底躺平 #暖暖的心情最好"
+        }
+    elif 13 <= cycle_day <= 16:
+        return {
+            "is_special": True,
+            "banner_tag": "✨ 仙氣滿格・高光閃耀模式",
+            "banner_msg": "今天真真公主自帶柔光濾鏡！水分補足、氣色滿分，走到哪裡都在發光～💖",
+            "card_tag": "✨ 仙女高光卡",
+            "title": "自帶頂級光芒的天使狀態",
+            "content": "『今天鏡子裡的真真公主，美到完全不需要任何濾鏡！』\n\n靈感爆棚、氣場全開，但忙店務時記得多喝溫水補水。\n今天想吃哪家私房好料？隨時翻牌子，好朋友立刻幫妳安排到位！✨\n\n#真真公主自帶光芒 #今天狀態滿格 #多喝溫水保持仙氣"
+        }
+    elif 24 <= cycle_day <= 28:
+        return {
+            "is_special": True,
+            "banner_tag": "👑 頂級順毛・零負擔特權",
+            "banner_msg": "最近容易疲倦或火氣大？誰敢惹妳通通面壁，大餐與好心情專屬供應！🥩",
+            "card_tag": "🛡️ 專屬避風港卡",
+            "title": "誰敢惹公主？好友全額出氣",
+            "content": "『最近偶爾覺得煩悶、沒耐心？千萬別生悶氣！』\n\n這是仙女系統在提醒妳需要高級蛋白質與大餐回血！\n阿力海生蠔龍蝦一樓好位已準備就緒，真真公主霸氣做東，好友負責把肚子空下來當快樂廢人！🔥\n\n#特級順毛模式 #吃肉補元氣 #全世界妳最重要"
+        }
+    else:
+        return {
+            "is_special": False,
+            "banner_tag": "",
+            "banner_msg": "",
+            "card_tag": "",
+            "title": "",
+            "content": ""
+        }
+
+# 5. 超低機率 SSR 稀有特權卡（防止口袋破洞）
 SSR_CARDS = [
     {
         "type": "ssr",
@@ -217,7 +290,7 @@ SSR_CARDS = [
     }
 ]
 
-# 5. 上限極限擴充：萬向五維語料庫矩陣（組合數突破 50,000+）
+# 6. 上限極限擴充：萬向五維語料庫矩陣（組合數突破 50,000+）
 CORPUS = {
     "food": {
         "titles": [
@@ -240,7 +313,7 @@ CORPUS = {
         "twists": [
             "這時候喝一口鮮甜滾燙的牛肉高湯，所有疲憊真的瞬間被徹底融化！",
             "炭佐麻里的烤肉滋滋作響，大口嚼肉的爽快感是任何保養品都換不來的！",
-            "阿力海滿滿的生蠔、龍蝦跟哈根達斯，就是犒賞女強人最棒的禮物！",
+            "阿力海滿滿的生蠔、龍蝦跟哈根達斯，真真公主親自訂的一樓好位，絕對吃得最舒適！",
             "來一杯酸甜生津的仙楂烏龍，微糖微冰，整個人都神清氣爽起來了！",
             "巷弄老宅剛出爐的肉桂捲，那股肉桂黑糖香氣直接把好心情補到滿格！",
             "咬下金黃酥脆的炸雞外皮，肉汁爆開的瞬間，所有煩惱通通立正站好！",
@@ -449,7 +522,7 @@ CORPUS = {
     }
 }
 
-# 6. 全局永久不重複黑名單（Global Seen Registry）
+# 7. 全局永久不重複黑名單（Global Seen Registry）
 if "seen_hashes" not in st.session_state:
     st.session_state.seen_hashes = set()
 
@@ -457,7 +530,6 @@ if "ssr_drawn_today" not in st.session_state:
     st.session_state.ssr_drawn_today = False
 
 if "current_card" not in st.session_state:
-    # 預設展示一張溫暖的開場卡
     st.session_state.current_card = {
         "type": "food",
         "tag": "🍜 台南吃貨地圖",
@@ -470,7 +542,6 @@ if "current_card" not in st.session_state:
 def generate_unique_dynamic_card(target_cat: str):
     is_infinite = (target_cat == "infinite")
     
-    # 嘗試生成尚未被抽過的卡片（最多嘗試 200 次防卡死）
     for _ in range(200):
         if is_infinite:
             pool_key = random.choice(["food", "dog", "cat", "kid", "meme"])
@@ -498,7 +569,6 @@ def generate_unique_dynamic_card(target_cat: str):
         content = f"『{op}。』\n\n{tw}\n\n{ac}\n\n{tg}"
         content_hash = hashlib.md5((title + content).encode('utf-8')).hexdigest()
 
-        # 只要看過，立即跳過，絕不重複！
         if content_hash not in st.session_state.seen_hashes:
             st.session_state.seen_hashes.add(content_hash)
             return {
@@ -509,7 +579,6 @@ def generate_unique_dynamic_card(target_cat: str):
                 "img": ""
             }
 
-    # 極端情況：若該分類組合快被抽乾，重設歷史並回傳
     st.session_state.seen_hashes.clear()
     return {
         "type": card_type,
@@ -519,7 +588,7 @@ def generate_unique_dynamic_card(target_cat: str):
         "img": ""
     }
 
-# 7. 頂部標題區
+# 8. 頂部標題區
 st.markdown("""
 <div style="text-align: center; margin-bottom: 14px;">
     <div style="font-size: 2.2rem;">👑</div>
@@ -528,7 +597,17 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 8. 小孩不乖．媽媽專屬發洩順毛區
+# 9. 智能檢測：若進入專屬呵護時期，自動展示頂部特權橫幅
+care_status = get_care_status()
+if care_status["is_special"]:
+    st.markdown(f"""
+    <div class="care-banner">
+        <div class="care-banner-tag">{care_status['banner_tag']}</div>
+        <div class="care-banner-msg">{care_status['banner_msg']}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# 10. 小孩不乖．媽媽專屬發洩順毛區
 with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐苦水）", expanded=True if "cure_result" in st.session_state else False):
     st.markdown("<p style='color: #4A3E3D; font-size: 0.9rem; margin-bottom: 6px;'>把今天臭小子/小妞幹的蠢事寫下來，好友立刻開出專屬退火單！</p>", unsafe_allow_html=True)
     kid_trouble = st.text_input("今天他又做了什麼讓妳血壓飆高？", value="翻倒水在名牌包" if "cure_result" not in st.session_state else "", placeholder="例如：翻倒水在名牌包、出門亂跑找半天...")
@@ -555,7 +634,7 @@ with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐
                     )
             else:
                 cures = [
-                    f"『小孩居然敢搞這齣：【{kid_trouble}】？！簡直造反啦！好友立刻開出退火單：罰小孩面壁，罰好友帶真真公主去吃阿力海生蠔龍蝦吃到飽！把受的委屈全在餐桌上討回來！』\n\n#專屬退火單 #把委屈吃回來",
+                    f"『小孩居然敢搞這齣：【{kid_trouble}】？！簡直造反啦！好友立刻開出退火單：罰小孩面壁，罰好友帶真真公主去吃炭佐麻里大口吃肉！把受的委屈全在餐桌上討回來！』\n\n#專屬退火單 #把委屈吃回來",
                     f"『聽到【{kid_trouble}】我都替妳心疼大腿了！記住八字保命箴言：自己生的、大腿放鬆！今晚就當個融化的布丁徹底躺平，什麼家務雜事通通不管了！』\n\n#當媽修煉手冊 #仙女合法放空",
                     f"『天底下沒有什麼煩惱是一碗滾燙鮮甜的台南溫體牛肉湯解決不了的！面對【{kid_trouble}】，最好的反擊就是等會點一塊焦糖布丁吃爆！公主消消氣～』\n\n#美食急救法 #好友全力撐妳"
                 ]
@@ -570,7 +649,7 @@ with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐
         </div>
         """, unsafe_allow_html=True)
 
-# 9. 盲盒分類抽卡機制
+# 11. 盲盒分類抽卡機制
 theme_filter = st.radio(
     "真真公主今天想翻什麼牌子？",
     ["🌌 無限宇宙模式（10,000+ 種動態組裝）", "🍜 美食探店與好味", "🐶 萌犬爆笑現場", "🐱 傲嬌主子日常", "🧒 當媽修煉吐槽", "😂 爆笑生活迷因"],
@@ -578,6 +657,19 @@ theme_filter = st.radio(
 )
 
 def pick_next_card():
+    # 特殊時期：65% 高機率優先抽中專屬呵護卡（若當天符合特殊區間）
+    if care_status["is_special"] and random.random() < 0.65:
+        care_hash = hashlib.md5((care_status["title"] + care_status["content"]).encode('utf-8')).hexdigest()
+        if care_hash not in st.session_state.seen_hashes:
+            st.session_state.seen_hashes.add(care_hash)
+            return {
+                "type": "care",
+                "tag": care_status["card_tag"],
+                "title": care_status["title"],
+                "content": sanitize_text(care_status["content"]),
+                "img": ""
+            }
+
     # 決定目標分類
     if "無限宇宙" in theme_filter:
         target_cat = "infinite"
@@ -596,7 +688,7 @@ def pick_next_card():
 
     # 防口袋破洞機制：SSR 機率微調至 1.8%，且每天/每階段最多僅限觸發 1 次
     if not st.session_state.ssr_drawn_today and random.random() < 0.018:
-        st.session_state.ssr_drawn_today = True  # 抽中後鎖定，避免狂出
+        st.session_state.ssr_drawn_today = True
         chosen_ssr = random.choice(SSR_CARDS)
         return chosen_ssr
 
@@ -607,9 +699,9 @@ def pick_next_card():
 if st.button("✨ 點我開盲盒！抽取真真專屬快樂 ✨"):
     st.session_state.current_card = pick_next_card()
 
-# 10. 開出的卡片展示
+# 12. 開出的卡片展示
 card = st.session_state.current_card
-tag_class = f"tag-{card['type']}" if f"tag-{card['type']}" in ["tag-food", "tag-dog", "tag-cat", "tag-kid", "tag-meme", "tag-infinite", "tag-ssr"] else "tag-food"
+tag_class = f"tag-{card['type']}" if f"tag-{card['type']}" in ["tag-food", "tag-dog", "tag-cat", "tag-kid", "tag-meme", "tag-infinite", "tag-ssr", "tag-care"] else "tag-food"
 
 st.markdown(f"""
 <div class="card-box">
@@ -624,7 +716,7 @@ if card.get("img"):
 
 st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
 
-# 11. 脆（Threads）療癒直達專區
+# 13. 脆（Threads）療癒直達專區
 with st.expander("🌀 還是想去脆上晃晃？點這裡直達熱門療癒話題", expanded=False):
     st.caption("為真真公主過濾掉無聊吵架，精選 Threads 上最受歡迎的美食與毛孩傳送門：")
     st.markdown('<a href="https://www.threads.net/search?q=%E5%8F%B0%E5%8D%97%E7%BE%8E%E9%A3%9F&serp_type=default" target="_blank" class="threads-btn">🍜 前往 Threads 查看最新【台南私房美食推薦】</a>', unsafe_allow_html=True)
@@ -632,7 +724,7 @@ with st.expander("🌀 還是想去脆上晃晃？點這裡直達熱門療癒話
     st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 前往 Threads 查看最新【傲嬌貓貓迷惑行為】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 前往 Threads 查看最新【爆笑迷因廢文】</a>', unsafe_allow_html=True)
 
-# 12. 專屬好友直達通道
+# 14. 專屬好友直達通道
 line_direct_url = "https://line.me/ti/p/3u_xwcKRUB"
 
 st.markdown(f"""
