@@ -14,19 +14,18 @@ try:
 except ImportError:
     genai = None
 
-# 1. 頁面基本配置（針對 iPhone 視窗與 LINE 瀏覽器最佳化）
+# 1. 頁面基本配置
 st.set_page_config(
     page_title="👑 真真公主的解壓美食盲盒",
     page_icon="👑",
     layout="centered"
 )
 
-# 2. 真楨美學專屬配色加固 CSS
+# 2. 真楨美學專屬配色 CSS（嚴格加固文字顯色，杜絕白字隱形）
 st.markdown("""
 <style>
 :root {
     color-scheme: light !important;
-    -webkit-color-scheme: light !important;
 }
 
 .block-container {
@@ -41,15 +40,37 @@ st.markdown("""
     visibility: hidden !important;
 }
 
-body {
-    -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent !important;
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Helvetica Neue", sans-serif;
+/* 全局深可可色字體，解決白色隱形問題 */
+html, body, [class*="css"], .stApp {
     color: #4A3E3D !important;
-    background-color: #FAF6F3 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Helvetica Neue", sans-serif;
 }
 .stApp {
     background: linear-gradient(180deg, #FDF9F8 0%, #F5ECE9 100%) !important;
+}
+
+/* 強制摺疊面板 (Expander) 標題顯色 */
+.streamlit-expanderHeader, div[data-testid="stExpander"] summary span, div[data-testid="stExpander"] details summary {
+    color: #C2255C !important;
+    font-weight: 700 !important;
+    font-size: 0.96rem !important;
+}
+div[data-testid="stExpander"] {
+    background: #FFFFFF !important;
+    border-radius: 16px !important;
+    border: 1.5px solid #F3DFE3 !important;
+    margin-bottom: 14px !important;
+}
+
+/* 單選按鈕文字顯色 */
+div[role="radiogroup"] label p, div[role="radiogroup"] label span {
+    color: #4A3E3D !important;
+    font-weight: 600 !important;
+    font-size: 0.92rem !important;
+}
+.stRadio > label {
+    color: #C2255C !important;
+    font-weight: 700 !important;
 }
 
 /* 盲盒卡片效果 */
@@ -61,7 +82,6 @@ body {
     border: 1.5px solid #F3DFE3 !important;
     margin-bottom: 16px !important;
     text-align: center;
-    -webkit-transform: translateZ(0);
 }
 
 .card-tag {
@@ -99,7 +119,7 @@ body {
     border: 1px solid #F3DFE3;
 }
 
-/* 抽卡與操作按鈕 */
+/* 按鈕樣式 */
 .stButton>button {
     background: linear-gradient(135deg, #E08A9D 0%, #D47A8F 100%) !important;
     color: #FFFFFF !important;
@@ -110,18 +130,13 @@ body {
     padding: 12px 20px !important;
     box-shadow: 0 6px 18px rgba(224, 138, 157, 0.35) !important;
     width: 100% !important;
-    touch-action: manipulation;
     transition: transform 0.08s ease;
 }
 .stButton>button:active {
     transform: scale(0.96) !important;
 }
 
-div[role="radiogroup"] label {
-    color: #4A3E3D !important;
-    font-size: 0.9rem !important;
-}
-
+/* Threads 按鈕樣式 */
 .threads-btn {
     display: block;
     background: #2D2426;
@@ -132,12 +147,7 @@ div[role="radiogroup"] label {
     font-weight: 700;
     text-decoration: none;
     margin-top: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     font-size: 0.92rem;
-    touch-action: manipulation;
-}
-.threads-btn:active {
-    opacity: 0.85;
 }
 
 /* LINE 專屬呼叫按鈕樣式 */
@@ -150,15 +160,9 @@ div[role="radiogroup"] label {
     padding: 14px 18px;
     border-radius: 26px;
     font-weight: 800;
-    text-decoration: none;
+    text-decoration: none !important;
     font-size: 0.98rem;
     box-shadow: 0 6px 20px rgba(194, 37, 92, 0.3);
-    touch-action: manipulation;
-    transition: transform 0.08s ease, opacity 0.08s ease;
-}
-.line-call-btn:active {
-    transform: scale(0.97);
-    opacity: 0.9;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -218,20 +222,6 @@ BASE_CARDS = [
     },
     {
         "type": "food",
-        "tag": "🍤 巷弄炸物解壓法",
-        "title": "宵夜的酥脆治癒力",
-        "content": "夜深人靜店裡收工後，來一份剛起鍋的香酥雞、魷魚圈配九層塔！\n咬下去卡滋卡滋的聲音，就是所有煩惱被嚼碎的聲音。熱量什麼的明天再說，今晚真真公主開心最重要！",
-        "img": ""
-    },
-    {
-        "type": "food",
-        "tag": "🍮 老宅老靈魂甜點",
-        "title": "躲進台南小巷吃布丁",
-        "content": "找一家藏在台南神農街或永康巷弄裡的靜謐老宅咖啡，點一杯手沖咖啡配上苦甜適中的焦糖布丁。\n靠在木椅上放空看窗外，沒有繁瑣的雜事，只有專屬於妳的安靜與甜美。",
-        "img": ""
-    },
-    {
-        "type": "food",
         "tag": "🦞 阿力海的頂級盛宴",
         "title": "海鮮自由的快樂體驗",
         "content": "現煎生蠔、焗烤龍蝦、鮮甜螃蟹還有哈根達斯吃到飽！\n坐在寬敞舒適的一樓座位，拿著滿滿一盤頂級海味，慢慢剝蝦、大口吃肉，這才是犒賞自己最棒的儀式感！",
@@ -250,27 +240,6 @@ BASE_CARDS = [
         "title": "世界上沒有壞心眼的大狗勾",
         "content": "拖鞋被咬爛了，被抓包時：\n耳朵向後貼成海豹、眼睛瞇成一條線，一邊傻笑一邊把毛茸茸的大爪子搭在妳手上踩兩下：『別生氣嘛～拖鞋是自己裂開的，我只是幫妳檢查材質！』",
         "img": ""
-    },
-    {
-        "type": "dog",
-        "tag": "🐶 柯基短腿大隊",
-        "title": "樓梯是柯基永遠的痛",
-        "content": "遇到三階以上的樓梯：\n大腦：『衝啊！』\n小短腿：『撲騰撲騰（懸空抓空氣）』。\n最後屁屁像顆烤吐司一扭一扭地等著人類連狗帶屁股提上去～",
-        "img": ""
-    },
-    {
-        "type": "dog",
-        "tag": "🐶 二哈拆遷辦",
-        "title": "哈士奇的獨特腦迴路",
-        "content": "別的狗狗做錯事會心虛低頭。\n哈士奇做錯事會直接站在沙發殘骸上對妳仰天長嘯：『嗷嗚嗚嗚！是沙發先動手的！妳為什麼要怪一隻無辜的狼！』讓妳氣到笑出腹肌！",
-        "img": ""
-    },
-    {
-        "type": "cat",
-        "tag": "🐱 貓咪物理學",
-        "title": "豪華貓窩 vs 破紙箱",
-        "content": "人類花了上千元買了豪華羊毛保暖貓窩 ❌\n快遞送來的沾滿灰塵破紙箱 ⭕\n貓咪：『愚蠢的人類，別用你俗氣的審美來衡量我尊貴的紙箱城堡。』",
-        "img": "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&auto=format&fit=crop&q=80"
     },
     {
         "type": "cat",
@@ -313,17 +282,10 @@ BASE_CARDS = [
         "title": "🛡️ 專屬出氣筒與無限順毛券",
         "content": "恭喜真真公主抽到頂級 SSR！\n【兌換權利】：\n今日不論心情多煩、遇到什麼鳥事想吐槽，好友無條件站妳這邊同仇敵愾，不講大道理、全心全意把真真公主哄開心為止！🌸",
         "img": ""
-    },
-    {
-        "type": "ssr",
-        "tag": "👑 專屬特權・SSR 稀有卡",
-        "title": "💻 網站與技術疑難雜症免死卡",
-        "content": "恭喜真真公主抽到技術支援 SSR！\n【兌換權利】：\n店裡網站、程式碼、宣傳排版遇到任何問號？免煩惱，一鍵召喚專屬工程師好友全包搞定，真真公主只管美美地經營！✨",
-        "img": ""
     }
 ]
 
-# 5. 語義工廠：隨機生成萬種不重複原創卡片
+# 5. 語義工廠：動態無限生成
 def generate_procedural_card(category: str):
     situations = [
         "剛忙完一整天的店務坐進沙發",
@@ -344,13 +306,10 @@ def generate_procedural_card(category: str):
         "放空發呆是合法權利，今晚誰都別想打擾真真公主！✨",
         "熱量與煩惱好友全包，真真公主只管笑得美美的就好！🌸"
     ]
-    
-    title_pool = ["公主的深夜食堂哲學", "台南吃貨的終極修煉", "專屬放空急救配方", "仙女的退火指南", "懂吃知己的召喚術"]
-    
     return {
         "type": category if category in ["food", "dog", "cat", "kid", "meme"] else "food",
         "tag": "✨ 無限卡池・專屬生成",
-        "title": random.choice(title_pool),
+        "title": "真真公主的美食與放空哲學",
         "content": f"『{random.choice(situations)}。』\n\n{random.choice(twists)}\n\n{random.choice(actions)}",
         "img": ""
     }
@@ -364,36 +323,49 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 7. 極速靈藥智庫（毫秒級直出，絕不轉圈死鎖）
-def generate_instant_cure(issue_text: str, mode: str) -> str:
-    # 針對名牌包、水、翻倒等關鍵字深度客製
-    if any(k in issue_text for k in ["包", "水", "倒", "皮夾", "LV"]):
-        if "毒舌" in mode:
-            return sanitize_text(
-                "『這臭小孩真的是專挑貴的下手！欠揍指數直接突破大氣層！\n"
-                "皮夾千萬別吹熱風，先拿乾布壓乾！深呼吸、大腿放鬆！\n"
-                "今晚罰小孩面壁，罰好友帶真真公主去吃炭佐麻里大口嚼肉出氣！\n"
-                "包包事小，把妳氣壞才虧大，吃飽飽明天又是霸氣女王！』\n\n#名牌包受難日 #好友全力出氣 #今晚吃肉補回來"
-            )
-        else:
-            return sanitize_text(
-                "『拍拍真真公主～心疼名牌包，更心疼妳血壓飆高！\n"
-                "皮夾先塞吸水紙巾陰乾，千萬別生悶氣喔。\n"
-                "這不是小孩的錯，是上天派來提醒妳該吃大餐了！\n"
-                "等會去點一杯仙楂烏龍、叫份熱呼呼的牛肉湯，好友隨時在線陪妳順毛！🌸』\n\n#公主消消氣 #仙女不跟凡人計較 #好友專屬後盾"
-            )
+# 7. AI 雙引擎調用邏輯（包含 1.5 秒超時熔斷保護）
+def call_ai_api(prompt_text: str, engine: str = "gemini") -> str:
+    gemini_key = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
+    openai_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
 
-    # 一般育兒問題預設段子庫
-    cures = [
-        "『臭小孩又在作亂？好友開出急速退火單：罰小孩罰站，罰好友帶真真公主去吃阿力海生蠔龍蝦吃到飽！把委屈全在餐桌上討回來！』\n\n#真真專屬退火單 #把委屈吃回來",
-        "『記住八字保命箴言：自己生的、大腿放鬆！今晚就當個融化的布丁徹底躺平，什麼家務雜事通通不管了！』\n\n#當媽修煉手冊 #仙女合法放空",
-        "『天底下沒有什麼煩惱是一碗滾燙鮮甜的台南溫體牛肉湯解決不了的，如果不行，那就再加上一盤現烤焦糖布丁！公主消消氣～』\n\n#美食急救法 #好友全力撐妳"
-    ]
-    return sanitize_text(random.choice(cures))
+    if "Gemini" in engine and gemini_key and genai:
+        try:
+            genai.configure(api_key=gemini_key)
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            resp = model.generate_content(prompt_text, request_options={"timeout": 1.5})
+            if resp and resp.text:
+                return sanitize_text(resp.text)
+        except Exception:
+            pass
 
-# 8. 小孩不乖．媽媽專屬發洩順毛區（急速零延遲響應版）
+    if "ChatGPT" in engine and openai_key and openai:
+        try:
+            client = openai.OpenAI(api_key=openai_key, timeout=1.5)
+            comp = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt_text}],
+                max_tokens=220
+            )
+            if comp and comp.choices:
+                return sanitize_text(comp.choices[0].message.content)
+        except Exception:
+            pass
+
+    # 智慧備份智庫（若 API 逾時或未設定 Key，即時毫秒回傳）
+    if any(k in prompt_text for k in ["包", "水", "倒", "皮夾", "LV"]):
+        return sanitize_text(
+            "『這臭小孩真的是專挑貴的下手！氣得人血壓飆高！\n"
+            "皮夾先拿乾布壓乾、千萬別吹熱風！大腿先放鬆～\n"
+            "今晚罰小孩面壁，罰好友帶真真公主去吃炭佐麻里大口嚼肉出氣！\n"
+            "包包事小，把妳氣壞才虧大，吃飽飽明天又是霸氣女老闆！』\n\n#名牌包急救 #好友全力出氣 #今晚吃肉補回來"
+        )
+    return sanitize_text(
+        "『臭小孩又在作亂？好友開出急速退火單：罰小孩罰站，罰好友帶真真公主去吃阿力海生蠔龍蝦吃到飽！把委屈全在餐桌上討回來！』\n\n#真真專屬退火單 #把委屈吃回來"
+    )
+
+# 8. 小孩不乖．媽媽專屬發洩順毛區（保留 AI 功能並修復顯色）
 with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐苦水）", expanded=True if "cure_result" in st.session_state else False):
-    st.caption("把今天臭小子/小妞幹的蠢事寫下來，好友立刻開出專屬退火單！")
+    st.markdown("<p style='color: #4A3E3D; font-size: 0.9rem; margin-bottom: 6px;'>把今天臭小子/小妞幹的蠢事寫下來，讓專屬 AI 與好友全力幫妳出氣解壓！</p>", unsafe_allow_html=True)
     kid_trouble = st.text_input("今天他又做了什麼讓妳血壓飆高？", value="翻倒水在名牌包" if "cure_result" not in st.session_state else "", placeholder="例如：翻倒水在名牌包、出門亂跑找半天...")
     ai_choice = st.radio("選擇吐槽解氣風格：", ["✨ 溫柔撫平順毛 (Gemini)", "🔥 毒舌幽默同仇敵愾 (ChatGPT)"], horizontal=True)
     
@@ -401,8 +373,13 @@ with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐
         if not kid_trouble:
             st.warning("真真公主先寫下一句他做了什麼，馬上替妳出氣！")
         else:
-            # 毫秒級極速直出，完全不走卡頓網路請求
-            st.session_state.cure_result = generate_instant_cure(kid_trouble, ai_choice)
+            style_prompt = (
+                f"妳是真真公主最好的知己好友。真真公主今天因為小孩這件事氣炸了：『{kid_trouble}』。\n"
+                "請站在真真公主這邊，狠狠吐槽小孩的蠢事，並用極度幽默、溫暖的語氣哄她開解，"
+                "提醒她放開捏大腿的手、別氣壞身體，並提議用台南美食（例如炭佐麻里、阿力海、牛肉湯）來慰勞她。\n"
+                "禁止說教、字數 120 字以內。"
+            )
+            st.session_state.cure_result = call_ai_api(style_prompt, engine=ai_choice)
 
     if "cure_result" in st.session_state:
         st.markdown(f"""
@@ -413,24 +390,34 @@ with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐
         </div>
         """, unsafe_allow_html=True)
 
-# 9. 盲盒分類抽卡機制
+# 9. 盲盒分類抽卡機制（復原 AI 即時生成選項）
 if "current_card" not in st.session_state:
     st.session_state.current_card = random.choice(BASE_CARDS)
 
 theme_filter = st.radio(
     "真真公主今天想翻什麼牌子？",
-    ["🎲 全都要（萬張無限抽）", "🍜 美食探店與好味", "🐶 萌犬爆笑現場", "🐱 傲嬌主子日常", "🧒 當媽修煉吐槽", "😂 爆笑生活迷因"],
+    ["🎲 全都要（萬張無限抽）", "🍜 美食探店與好味", "🐶 萌犬爆笑現場", "🐱 傲嬌主子日常", "🧒 當媽修煉吐槽", "😂 爆笑生活迷因", "🤖 AI 即時無限生成"],
     horizontal=True
 )
 
 def pick_next_card():
-    cat_map = {
-        "美食": "food",
-        "萌犬": "dog",
-        "主子": "cat",
-        "當媽": "kid",
-        "迷因": "meme"
-    }
+    # 模式 1：AI 即時生成
+    if "AI" in theme_filter:
+        ai_prompt = (
+            "請為『真真公主』寫一張短篇療癒幽默卡片。主題圍繞大台南美食探店、可愛貓狗或下班放空。"
+            "口吻幽默、真誠，像懂吃的知己好友，字數約 80-100 字，附帶趣味 hashtag。"
+        )
+        ai_text = call_ai_api(ai_prompt, engine="Gemini")
+        return {
+            "type": "ai",
+            "tag": "🤖 AI 即時靈魂創作",
+            "title": "真真公主今日限定快樂",
+            "content": ai_text,
+            "img": ""
+        }
+
+    # 模式 2：分類篩選
+    cat_map = {"美食": "food", "萌犬": "dog", "主子": "cat", "當媽": "kid", "迷因": "meme"}
     target_type = None
     for k, v in cat_map.items():
         if k in theme_filter:
@@ -452,7 +439,7 @@ def pick_next_card():
     card["content"] = sanitize_text(card["content"])
     return card
 
-# 抽卡按鈕（極速響應架構）
+# 抽卡按鈕
 if st.button("✨ 點我開盲盒！抽取真真專屬快樂 ✨"):
     st.session_state.current_card = pick_next_card()
 
@@ -481,7 +468,7 @@ with st.expander("🌀 還是想去脆上晃晃？點這裡直達熱門療癒話
     st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 前往 Threads 查看最新【傲嬌貓貓迷惑行為】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 前往 Threads 查看最新【爆笑迷因廢文】</a>', unsafe_allow_html=True)
 
-# 12. 專屬好友直達通道（已修正為官方標準邀請連結，點擊直接進對話）
+# 12. 專屬好友直達通道
 line_direct_url = "https://line.me/ti/p/3u_xwcKRUB"
 
 st.markdown(f"""
