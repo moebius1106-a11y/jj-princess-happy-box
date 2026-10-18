@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import time
 
 # 1. 頁面基本配置（針對 iPhone 視窗與 LINE 瀏覽器最佳化）
 st.set_page_config(
@@ -9,35 +8,44 @@ st.set_page_config(
     layout="centered"
 )
 
-# 2. 真楨美學專屬配色 CSS（嚴格加固文字顯色，杜絕白字隱形）
+# 2. iPhone WebKit 深度優化與真楨美學專屬配色加固 CSS
 st.markdown("""
 <style>
+/* 徹底鎖定 iOS 淺色渲染，防止 iPhone 深色模式反轉造成字體反白隱形 */
 :root {
     color-scheme: light !important;
+    -webkit-color-scheme: light !important;
 }
 
+/* 適配 iPhone 頂部動態島 / 瀏海與底部安全區域 (Home Bar) */
 .block-container {
     padding-top: max(0.8rem, env(safe-area-inset-top)) !important;
     padding-bottom: max(3.5rem, env(safe-area-inset-bottom)) !important;
     padding-left: 0.8rem !important;
     padding-right: 0.8rem !important;
+    -webkit-text-size-adjust: 100% !important; /* 禁止橫向旋轉字體縮放 */
 }
 
+/* 隱藏官方雜項與浮水印 */
 #MainMenu, footer, header, [data-testid="manage-app-button"], div[data-testid="stDecoration"] {
     display: none !important;
     visibility: hidden !important;
 }
 
-/* 全局深可可色字體，徹底防止白色隱形 */
+/* iOS 專屬字體平滑與觸控反饋，消除雙擊放大延遲 */
 html, body, [class*="css"], .stApp {
     color: #4A3E3D !important;
     font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
 }
+
 .stApp {
     background: linear-gradient(180deg, #FDF9F8 0%, #F5ECE9 100%) !important;
 }
 
-/* 摺疊面板 (Expander) 標題顯色 */
+/* 摺疊面板 (Expander) 標題顯色加固 */
 .streamlit-expanderHeader, div[data-testid="stExpander"] summary span, div[data-testid="stExpander"] details summary {
     color: #C2255C !important;
     font-weight: 700 !important;
@@ -48,9 +56,10 @@ div[data-testid="stExpander"] {
     border-radius: 16px !important;
     border: 1.5px solid #F3DFE3 !important;
     margin-bottom: 14px !important;
+    box-shadow: 0 4px 14px rgba(224, 138, 157, 0.1) !important;
 }
 
-/* 單選按鈕文字顯色 */
+/* 單選按鈕文字顯色加固 */
 div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     color: #4A3E3D !important;
     font-weight: 600 !important;
@@ -61,7 +70,7 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     font-weight: 700 !important;
 }
 
-/* 盲盒卡片效果 */
+/* 盲盒卡片效果（針對 iOS WebKit 硬體渲染加速） */
 .card-box {
     background: #FFFFFF !important;
     padding: 22px 18px !important;
@@ -70,6 +79,7 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     border: 1.5px solid #F3DFE3 !important;
     margin-bottom: 16px !important;
     text-align: center;
+    -webkit-transform: translateZ(0);
 }
 
 .card-tag {
@@ -107,7 +117,7 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     border: 1px solid #F3DFE3;
 }
 
-/* 抽卡按鈕 */
+/* 抽卡按鈕：全面支援 iPhone 原生 Q 彈回饋，禁用雙擊放大延遲 */
 .stButton>button {
     background: linear-gradient(135deg, #E08A9D 0%, #D47A8F 100%) !important;
     color: #FFFFFF !important;
@@ -115,13 +125,29 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     font-weight: 800 !important;
     border-radius: 24px !important;
     border: none !important;
-    padding: 12px 20px !important;
+    padding: 13px 20px !important;
     box-shadow: 0 6px 18px rgba(224, 138, 157, 0.35) !important;
     width: 100% !important;
+    touch-action: manipulation !important;
     transition: transform 0.08s ease;
 }
 .stButton>button:active {
     transform: scale(0.96) !important;
+}
+
+/* 脆（Threads）按鈕 */
+.threads-btn {
+    display: block;
+    background: #2D2426;
+    color: #FFFFFF !important;
+    text-align: center;
+    padding: 12px 14px;
+    border-radius: 18px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: 8px;
+    font-size: 0.92rem;
+    touch-action: manipulation;
 }
 
 /* LINE 專屬呼叫按鈕樣式 */
@@ -137,6 +163,11 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     text-decoration: none !important;
     font-size: 0.98rem;
     box-shadow: 0 6px 20px rgba(194, 37, 92, 0.3);
+    touch-action: manipulation;
+    transition: transform 0.08s ease;
+}
+.line-call-btn:active {
+    transform: scale(0.97);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -157,7 +188,7 @@ def sanitize_text(text: str) -> str:
         text = text.replace(old, new)
     return text
 
-# 4. 精選核心卡池資料庫
+# 4. 精選核心母庫
 BASE_CARDS = [
     {
         "type": "food",
@@ -259,61 +290,68 @@ BASE_CARDS = [
     }
 ]
 
-# 5. 多維矩陣動態無限生成引擎（Procedural Matrix Generator：10,000+ 種梗文零延遲運算）
-def generate_matrix_infinite_card(category: str = "infinite"):
+# 5. 「無限宇宙模式」核心矩陣組裝演算法（突破 15,000+ 種動態組合）
+def generate_infinite_universe_card():
     openings = [
-        "剛忙完一整天的店務坐進沙發",
-        "明明肚子餓卻完全想不出要吃哪家",
-        "臭小孩又在旁邊挑戰理智線底線",
-        "深夜十二點滑著手機，發現全台南都在發宵夜文",
-        "走進台南巷弄意外聞到超濃郁的現烤甜點香",
-        "下定決心今天要當個早睡的乖寶寶",
-        "一開門發現家裡主子又在用看愚蠢人類的眼神盯著妳",
-        "站在衣櫃前發呆了十分鐘，覺得今天又沒有衣服穿"
+        "剛忙完一整天的店務坐進沙發放空",
+        "明明肚子餓卻完全想不出台南今天要吃哪家好",
+        "臭小孩又在旁邊挑戰理智線底線大鬧天宮",
+        "深夜十二點滑著手機，發現整個脆上都在發罪惡宵夜文",
+        "走進台南巷弄意外聞到剛出爐的焦糖肉桂捲香氣",
+        "下定決心今天要當個十點就睡覺的乖寶寶",
+        "一開門發現家裡主子正用看愚蠢人類的鄙夷眼神盯著妳",
+        "站在衣櫃前發呆了整整十分鐘，覺得今天又沒有衣服穿了",
+        "工作開了一整天的會議，感覺靈魂已經飄出天花板了",
+        "剛把小孩搞定上床，整座客廳突然安靜得像平行宇宙"
     ]
-    twists = [
-        "這時候如果能來一碗滾燙鮮嫩的溫體牛肉湯，整個人都會瞬間昇華！",
-        "深吸一口氣，告訴自己：仙女是不跟凡間瑣事計較的～",
+    conflicts = [
+        "這時候如果能來一碗滾燙鮮嫩的溫體牛肉湯，整個人都會瞬間原地昇華！",
+        "深吸一口氣，捏著大腿告訴自己：仙女是不跟凡間瑣事計較的～",
         "這世界上只有兩件事不能妥協：美食的溫度，以及真真公主的心情！",
-        "拉麵要吃硬麵濃湯，生活要過得隨性自在！",
-        "突然驚覺：減肥永遠是明天的事，當下的快樂才是真實的！",
+        "拉麵要吃硬麵濃湯，人生要過得隨性自在！",
+        "突然驚覺：減肥永遠是明天的事，當下的快樂才是真實存在的！",
         "決定立刻啟動『碳基生物系統格式化』，在沙發上融化成一灘布丁！",
-        "轉念一想：世界上沒有一頓好料解決不了的煩惱，如果有，就兩頓！"
+        "轉念一想：世界上沒有一頓好料解決不了的煩惱，如果有，就吃兩頓！",
+        "看著被翻倒的水杯，心想這一定是上天派來提醒我該出門吃大餐的暗示！",
+        "突然頓悟：當媽媽已經用盡了洪荒之力，偶爾任性擺爛全世界都該體諒！"
     ]
-    actions = [
+    resolutions = [
         "專屬好朋友隨時待命，只要公主一聲令下，探店車隊立刻出發！🚗",
         "今天所有的不愉快，就交給炭佐麻里的烤肉替妳滋滋作響全部烤散！🥩",
-        "放空發呆是合法權利，今晚誰都別想打擾真真公主！✨",
+        "放空發呆是合法神聖權利，今晚誰都別想來打擾真真公主！✨",
         "熱量與煩惱好友全包，真真公主只管笑得美美的就好！🌸",
         "點一杯微糖微冰的仙楂烏龍，打開電視，讓全世界都圍著公主轉！🍵",
-        "換上平底鞋，今晚帶妳去台南老宅吃那家只有內行人才知道的焦糖布丁！🍮"
+        "換上平底鞋，今晚帶妳去台南老宅吃那家只有內行人才知道的焦糖布丁！🍮",
+        "明天的事情交給明天的智慧，今晚先讓真真公主徹底充電回血！🔋",
+        "把委屈全寫在菜單上，阿力海的生蠔龍蝦已經在等著被妳消滅了！🦞"
     ]
     hashtags = [
         "#真真公主限定 #台南吃貨後盾 #懂吃好友隨時在線",
         "#放空是神聖權利 #今天不當大人 #美食治癒一切",
         "#把委屈全部吃回來 #仙女不生氣 #專屬開心能量",
-        "#阿力海探店倒數 #炭佐麻里烤肉魂 #熱量好友全認領"
+        "#阿力海探店倒數 #炭佐麻里烤肉魂 #熱量好友全認領",
+        "#無限宇宙動態組合 #每次抽都不一樣 #專屬好心情"
     ]
     titles = [
-        "👑 公主的深夜食堂急救哲學",
-        "🍜 台南巷弄吃貨的終極修煉",
-        "🧘‍♀️ 仙女專屬的急速退火指南",
-        "🐾 毛孩迷惑行為大賞",
-        "🍰 甜點與胃的秘密空間",
-        "🛡️ 知己好朋友的召喚術"
+        "🌌 無限宇宙：公主的深夜食堂急救哲學",
+        "🌌 無限宇宙：台南巷弄吃貨的終極修煉",
+        "🌌 無限宇宙：仙女專屬的急速退火指南",
+        "🌌 無限宇宙：毛孩與傲嬌主子的迷惑哲學",
+        "🌌 無限宇宙：甜點與胃的秘密第四維度",
+        "🌌 無限宇宙：專屬神隊友的召喚魔法"
     ]
 
     o = random.choice(openings)
-    t = random.choice(twists)
-    a = random.choice(actions)
+    c = random.choice(conflicts)
+    r = random.choice(resolutions)
     h = random.choice(hashtags)
     title = random.choice(titles)
 
     return {
         "type": "infinite",
-        "tag": "⚡ 動態無限生成・全新段子",
+        "tag": "🌌 無限宇宙動態卡片",
         "title": title,
-        "content": f"『{o}。』\n\n{t}\n\n{a}\n\n{h}",
+        "content": f"『{o}。』\n\n{c}\n\n{r}\n\n{h}",
         "img": ""
     }
 
@@ -322,7 +360,7 @@ st.markdown("""
 <div style="text-align: center; margin-bottom: 14px;">
     <div style="font-size: 2.2rem;">👑</div>
     <div style="color: #C2255C; font-size: 1.45rem; font-weight: 800; letter-spacing: 0.5px;">真真公主的解壓美食盲盒</div>
-    <div style="color: #8C6D77; font-size: 0.88rem; margin-top: 4px;">萬張無限動態生成！台南好店、吸貓嚕狗與爆笑解氣專區 🌸</div>
+    <div style="color: #8C6D77; font-size: 0.88rem; margin-top: 4px;">🌌 無限宇宙模式啟動！台南好店、吸貓嚕狗與爆笑解氣專區 🌸</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -368,20 +406,20 @@ with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐
         </div>
         """, unsafe_allow_html=True)
 
-# 8. 盲盒分類抽卡機制（動態無限生成引擎＋精選母庫）
+# 8. 盲盒分類抽卡機制
 if "current_card" not in st.session_state:
     st.session_state.current_card = random.choice(BASE_CARDS)
 
 theme_filter = st.radio(
     "真真公主今天想翻什麼牌子？",
-    ["⚡ 萬張動態無限抽（永不重複）", "🍜 美食探店與好味", "🐶 萌犬爆笑現場", "🐱 傲嬌主子日常", "🧒 當媽修煉吐槽", "😂 爆笑生活迷因"],
+    ["🌌 無限宇宙模式（10,000+ 種動態組裝）", "🍜 美食探店與好味", "🐶 萌犬爆笑現場", "🐱 傲嬌主子日常", "🧒 當媽修煉吐槽", "😂 爆笑生活迷因"],
     horizontal=True
 )
 
 def pick_next_card():
-    # 模式 1：萬張動態無限抽
-    if "無限" in theme_filter:
-        return generate_matrix_infinite_card("infinite")
+    # 模式 1：無限宇宙模式（動態組裝）
+    if "無限宇宙" in theme_filter:
+        return generate_infinite_universe_card()
 
     # 模式 2：分類篩選
     cat_map = {"美食": "food", "萌犬": "dog", "主子": "cat", "當媽": "kid", "迷因": "meme"}
@@ -391,15 +429,15 @@ def pick_next_card():
             target_type = v
             break
 
-    # 40% 機率抽母庫精品，60% 機率由矩陣引擎演算全新段子
+    # 50% 機率抽母庫精選，50% 機率由矩陣演算法組裝
     dice = random.random()
     if target_type:
         candidates = [c for c in BASE_CARDS if c["type"] in [target_type, "ssr"]]
     else:
         candidates = BASE_CARDS
 
-    if dice > 0.4 or not candidates:
-        card = generate_matrix_infinite_card(target_type or "food")
+    if dice > 0.5 or not candidates:
+        card = generate_infinite_universe_card()
     else:
         card = random.choice(candidates)
 
@@ -407,7 +445,7 @@ def pick_next_card():
     card["content"] = sanitize_text(card["content"])
     return card
 
-# 抽卡按鈕（零延遲響應架構）
+# 抽卡按鈕（零延遲極速響應）
 if st.button("✨ 點我開盲盒！抽取真真專屬快樂 ✨"):
     st.session_state.current_card = pick_next_card()
 
@@ -436,7 +474,7 @@ with st.expander("🌀 還是想去脆上晃晃？點這裡直達熱門療癒話
     st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 前往 Threads 查看最新【傲嬌貓貓迷惑行為】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 前往 Threads 查看最新【爆笑迷因廢文】</a>', unsafe_allow_html=True)
 
-# 11. 專屬好友直達通道
+# 11. 專屬好友直達通道（官方短連結直跳對話頁）
 line_direct_url = "https://line.me/ti/p/3u_xwcKRUB"
 
 st.markdown(f"""
