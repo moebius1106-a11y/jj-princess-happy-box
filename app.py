@@ -23,7 +23,7 @@ st.markdown("""
     padding-bottom: max(3.5rem, env(safe-area-inset-bottom)) !important;
     padding-left: 0.8rem !important;
     padding-right: 0.8rem !important;
-    -webkit-text-size-adjust: 100% !important; /* 禁止橫向旋轉字體縮放 */
+    -webkit-text-size-adjust: 100% !important;
 }
 
 /* 隱藏官方雜項與浮水印 */
@@ -68,6 +68,20 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
 .stRadio > label {
     color: #C2255C !important;
     font-weight: 700 !important;
+}
+
+/* 徹底修正 Radio 單選圓圈變黑問題 */
+div[role="radiogroup"] > label div:first-child {
+    background-color: #FFFFFF !important;
+    border: 2px solid #E08A9D !important;
+}
+div[role="radiogroup"] > label[data-checked="true"] div:first-child,
+div[role="radiogroup"] input:checked + div {
+    border-color: #C2255C !important;
+    background-color: #C2255C !important;
+}
+div[role="radiogroup"] svg {
+    fill: #C2255C !important;
 }
 
 /* 盲盒卡片效果（針對 iOS WebKit 硬體渲染加速） */
@@ -117,7 +131,7 @@ div[role="radiogroup"] label p, div[role="radiogroup"] label span {
     border: 1px solid #F3DFE3;
 }
 
-/* 抽卡按鈕：全面支援 iPhone 原生 Q 彈回饋，禁用雙擊放大延遲 */
+/* 抽卡按鈕：全面支援 iPhone 原生 Q 彈回饋 */
 .stButton>button {
     background: linear-gradient(135deg, #E08A9D 0%, #D47A8F 100%) !important;
     color: #FFFFFF !important;
@@ -290,7 +304,7 @@ BASE_CARDS = [
     }
 ]
 
-# 5. 「無限宇宙模式」核心矩陣組裝演算法（突破 15,000+ 種動態組合）
+# 5. 「無限宇宙模式」核心矩陣組裝演算法
 def generate_infinite_universe_card():
     openings = [
         "剛忙完一整天的店務坐進沙發放空",
@@ -301,7 +315,6 @@ def generate_infinite_universe_card():
         "下定決心今天要當個十點就睡覺的乖寶寶",
         "一開門發現家裡主子正用看愚蠢人類的鄙夷眼神盯著妳",
         "站在衣櫃前發呆了整整十分鐘，覺得今天又沒有衣服穿了",
-        "工作開了一整天的會議，感覺靈魂已經飄出天花板了",
         "剛把小孩搞定上床，整座客廳突然安靜得像平行宇宙"
     ]
     conflicts = [
@@ -312,8 +325,7 @@ def generate_infinite_universe_card():
         "突然驚覺：減肥永遠是明天的事，當下的快樂才是真實存在的！",
         "決定立刻啟動『碳基生物系統格式化』，在沙發上融化成一灘布丁！",
         "轉念一想：世界上沒有一頓好料解決不了的煩惱，如果有，就吃兩頓！",
-        "看著被翻倒的水杯，心想這一定是上天派來提醒我該出門吃大餐的暗示！",
-        "突然頓悟：當媽媽已經用盡了洪荒之力，偶爾任性擺爛全世界都該體諒！"
+        "看著被翻倒的水杯，心想這一定是上天派來提醒我該出門吃大餐的暗示！"
     ]
     resolutions = [
         "專屬好朋友隨時待命，只要公主一聲令下，探店車隊立刻出發！🚗",
@@ -329,29 +341,21 @@ def generate_infinite_universe_card():
         "#真真公主限定 #台南吃貨後盾 #懂吃好友隨時在線",
         "#放空是神聖權利 #今天不當大人 #美食治癒一切",
         "#把委屈全部吃回來 #仙女不生氣 #專屬開心能量",
-        "#阿力海探店倒數 #炭佐麻里烤肉魂 #熱量好友全認領",
-        "#無限宇宙動態組合 #每次抽都不一樣 #專屬好心情"
+        "#阿力海探店倒數 #炭佐麻里烤肉魂 #熱量好友全認領"
     ]
     titles = [
         "🌌 無限宇宙：公主的深夜食堂急救哲學",
         "🌌 無限宇宙：台南巷弄吃貨的終極修煉",
         "🌌 無限宇宙：仙女專屬的急速退火指南",
-        "🌌 無限宇宙：毛孩與傲嬌主子的迷惑哲學",
         "🌌 無限宇宙：甜點與胃的秘密第四維度",
         "🌌 無限宇宙：專屬神隊友的召喚魔法"
     ]
 
-    o = random.choice(openings)
-    c = random.choice(conflicts)
-    r = random.choice(resolutions)
-    h = random.choice(hashtags)
-    title = random.choice(titles)
-
     return {
         "type": "infinite",
         "tag": "🌌 無限宇宙動態卡片",
-        "title": title,
-        "content": f"『{o}。』\n\n{c}\n\n{r}\n\n{h}",
+        "title": random.choice(titles),
+        "content": f"『{random.choice(openings)}。』\n\n{random.choice(conflicts)}\n\n{random.choice(resolutions)}\n\n{random.choice(hashtags)}",
         "img": ""
     }
 
@@ -364,7 +368,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 7. 小孩不乖．媽媽專屬發洩順毛區（急速零延遲響應版）
+# 7. 小孩不乖．媽媽專屬發洩順毛區
 with st.expander("🤬 小孩不乖？媽媽專屬發洩順毛區（點開來吐苦水）", expanded=True if "cure_result" in st.session_state else False):
     st.markdown("<p style='color: #4A3E3D; font-size: 0.9rem; margin-bottom: 6px;'>把今天臭小子/小妞幹的蠢事寫下來，好友立刻開出專屬退火單！</p>", unsafe_allow_html=True)
     kid_trouble = st.text_input("今天他又做了什麼讓妳血壓飆高？", value="翻倒水在名牌包" if "cure_result" not in st.session_state else "", placeholder="例如：翻倒水在名牌包、出門亂跑找半天...")
@@ -417,11 +421,9 @@ theme_filter = st.radio(
 )
 
 def pick_next_card():
-    # 模式 1：無限宇宙模式（動態組裝）
     if "無限宇宙" in theme_filter:
         return generate_infinite_universe_card()
 
-    # 模式 2：分類篩選
     cat_map = {"美食": "food", "萌犬": "dog", "主子": "cat", "當媽": "kid", "迷因": "meme"}
     target_type = None
     for k, v in cat_map.items():
@@ -429,7 +431,6 @@ def pick_next_card():
             target_type = v
             break
 
-    # 50% 機率抽母庫精選，50% 機率由矩陣演算法組裝
     dice = random.random()
     if target_type:
         candidates = [c for c in BASE_CARDS if c["type"] in [target_type, "ssr"]]
@@ -445,7 +446,7 @@ def pick_next_card():
     card["content"] = sanitize_text(card["content"])
     return card
 
-# 抽卡按鈕（零延遲極速響應）
+# 抽卡按鈕
 if st.button("✨ 點我開盲盒！抽取真真專屬快樂 ✨"):
     st.session_state.current_card = pick_next_card()
 
@@ -474,7 +475,7 @@ with st.expander("🌀 還是想去脆上晃晃？點這裡直達熱門療癒話
     st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 前往 Threads 查看最新【傲嬌貓貓迷惑行為】</a>', unsafe_allow_html=True)
     st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 前往 Threads 查看最新【爆笑迷因廢文】</a>', unsafe_allow_html=True)
 
-# 11. 專屬好友直達通道（官方短連結直跳對話頁）
+# 11. 專屬好友直達通道
 line_direct_url = "https://line.me/ti/p/3u_xwcKRUB"
 
 st.markdown(f"""
