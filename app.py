@@ -43,7 +43,7 @@ html, body, [class*="css"], .stApp {
     background: linear-gradient(180deg, #FDF9F8 0%, #F5ECE9 100%) !important;
 }
 
-/* 頂部 iPhone / LINE 貼心提示卡 */
+/* 頂部 iPhone / LINE 貼心指引框 */
 .safari-tip-box {
     background: #FFF9FA;
     border: 1px dashed #E08A9D;
@@ -81,7 +81,7 @@ html, body, [class*="css"], .stApp {
     line-height: 1.45;
 }
 
-/* 折疊區塊文字單行展示優化 */
+/* 收合選單標題單行優化 */
 .streamlit-expanderHeader, div[data-testid="stExpander"] summary span, div[data-testid="stExpander"] details summary {
     color: #C2255C !important;
     font-weight: 700 !important;
@@ -186,21 +186,26 @@ div[role="radiogroup"] svg {
     transform: scale(0.96) !important;
 }
 
+/* 脆按鈕：強制單行、邊距優化、緊湊字距 */
 .threads-btn {
     display: block;
     background: #2D2426;
     color: #FFFFFF !important;
     text-align: center;
-    padding: 12px 14px;
+    padding: 11px 8px;
     border-radius: 18px;
     font-weight: 700;
-    text-decoration: none;
+    text-decoration: none !important;
     margin-top: 8px;
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     touch-action: manipulation;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.2px;
 }
 
-/* 召喚按鈕優化：強制單行、緊湊字距 */
+/* 召喚按鈕：強制單行顯示 */
 .line-call-btn {
     display: block;
     width: 100%;
@@ -618,7 +623,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# 9. 頂部標題區（字數精簡，防止「解氣專區」折行）
+# 9. 頂部標題區（字數嚴格控制，保證單行不折行）
 st.markdown("""
 <div style="text-align: center; margin-bottom: 14px;">
     <div style="font-size: 2.2rem;">👑</div>
@@ -745,13 +750,13 @@ if card.get("img"):
 
 st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
 
-# 14. 脆（Threads）療癒直達專區（標題精簡不折行）
+# 14. 脆（Threads）療癒直達專區（字距緊湊、單行顯示）
 with st.expander("🌀 還是想去脆上晃晃？熱門療癒話題", expanded=False):
-    st.caption("為真真公主過濾掉無聊吵架，精選 Threads 上最受歡迎的美食與毛孩傳送門：")
-    st.markdown('<a href="https://www.threads.net/search?q=%E5%8F%B0%E5%8D%97%E7%BE%8E%E9%A3%9F&serp_type=default" target="_blank" class="threads-btn">🍜 前往 Threads 查看最新【台南私房美食推薦】</a>', unsafe_allow_html=True)
-    st.markdown('<a href="https://www.threads.net/search?q=%E5%8F%AF%E6%84%9B%E5%B0%8F%E7%8B%97&serp_type=default" target="_blank" class="threads-btn">🐶 前往 Threads 查看最新【汪星人搞笑日常】</a>', unsafe_allow_html=True)
-    st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 前往 Threads 查看最新【傲嬌貓貓迷惑行為】</a>', unsafe_allow_html=True)
-    st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 前往 Threads 查看最新【爆笑迷因廢文】</a>', unsafe_allow_html=True)
+    st.caption("為真真公主過濾掉無聊吵架，精選 Threads 熱門傳送門：")
+    st.markdown('<a href="https://www.threads.net/search?q=%E5%8F%B0%E5%8D%97%E7%BE%8E%E9%A3%9F&serp_type=default" target="_blank" class="threads-btn">🍜 逛脆：【台南私房美食】精選話題</a>', unsafe_allow_html=True)
+    st.markdown('<a href="https://www.threads.net/search?q=%E5%8F%AF%E6%84%9B%E5%B0%8F%E7%8B%97&serp_type=default" target="_blank" class="threads-btn">🐶 逛脆：【汪星人搞笑日常】治癒專區</a>', unsafe_allow_html=True)
+    st.markdown('<a href="https://www.threads.net/search?q=%E8%B2%93%E5%92%AA%E5%A5%BD%E7%AC%91&serp_type=default" target="_blank" class="threads-btn">🐱 逛脆：【傲嬌主子迷惑行為】大賞</a>', unsafe_allow_html=True)
+    st.markdown('<a href="https://www.threads.net/search?q=%E7%88%86%E7%AC%91%E8%BF%B7%E5%9B%A0&serp_type=default" target="_blank" class="threads-btn">😂 逛脆：【爆笑迷因廢文】解壓專區</a>', unsafe_allow_html=True)
 
 # 15. 專屬好友直達通道（文案緊湊單行化）
 line_direct_url = "https://line.me/ti/p/3u_xwcKRUB"
